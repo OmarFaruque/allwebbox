@@ -1,0 +1,81 @@
+/*
+* Allwebbox Front CSS
+*/
+form.allwebboxDynamicForm label {
+    font-weight: normal;
+}
+.entry-header
+{
+display:none;	
+}
+.entry-content{
+ width:100% !important;
+}
+.chosen-container-single .chosen-single {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    padding: 0 0 0 8px;
+    height: 33px;
+    border: 1px solid #ececec;
+    border-radius: 5px;
+    background-color: #fcfcfc;
+    background-clip: padding-box;
+    box-shadow: none;
+    color: #444;
+    text-decoration: none;
+    white-space: nowrap;
+    line-height: 32px;
+}
+.chosen-container-active.chosen-with-drop .chosen-single div b {
+    background-position: -18px 9px;
+}
+.chosen-container-single .chosen-single div b {
+    background-position: 0px 6px;
+}
+.mt30{margin-top:30px;}
+.entryFormInner:before {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    content: '';
+    z-index: 0;
+}
+div#displMessg {
+    padding: 10px;
+    font-size: 16px;
+}
+
+div#displMessg.error.bg-danger{
+    background-color: red;
+}
+div#displMessg.success.bg-success{
+    background-color: green;
+}
+div#displMessg.success.bg-success span{color:white;}
+#entryFormAllWebBox .allwebboxDynamicForm .btn-group a.btn {
+    border-left: 1px solid #fff;
+    margin-left:0px;
+}
+.bg-danger {
+    background-color: #a94442;
+    color: #fff;
+}
+.mb20{margin-bottom:20px;}
+
+form.form.allwebboxDynamicForm.editExisting .form-group {
+    min-height: 60px;
+}
+div#messageSow > div {
+    padding: 10px 15px;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+form.form.allwebboxDynamicForm div.row > div > div {
+    min-height: 60px;
+}
+.headingextiRecord h2 {
+    margin-top: 0;
+}

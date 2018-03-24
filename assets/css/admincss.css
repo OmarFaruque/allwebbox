@@ -1,0 +1,1017 @@
+/* All webbox Admin CSS */
+@import url(style.css);
+a.tooltips {
+  position: relative;
+  display: inline;
+  width: 31%;
+  float: left;
+  font-size:12px;
+}
+
+a.tooltips span {
+  position: absolute;
+  width: auto;
+  color: #ffffff;
+  background: #000000;
+  /*height: 30px;*/
+  line-height: 30px;
+  text-align: center;
+  visibility: hidden;
+  border-radius: 6px;
+  float: left !important;
+  left: 10px !important;
+  padding: 0px 10px;
+}
+
+a.tooltips span:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -8px;
+  width: 0;
+  height: 0;
+  border-right: 8px solid #000000;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+
+a:hover.tooltips span {
+  visibility: visible;
+  opacity: 0.8;
+  left: 100%;
+  top: 50%;
+  margin-top: -15px;
+  margin-left: 15px;
+  z-index: 999;
+}
+
+
+.fix-padding b {
+  float: left;
+  width: 225px;
+  min-width: 171px;
+}
+
+.fix-padding span.leftText
+{
+  float: left;
+  margin-right:10px;
+}
+
+.col-md-12 h3 {
+  float: left;
+}
+
+.row {
+  margin-right: 0px;
+}
+
+.page-content-wrapper.allwebbox {
+    max-width: 1100px;
+}
+a.visiableSection {
+    color: #fff;
+    background: #0073aa;
+    padding: 6px 8px;
+    display: inline-block;
+    position: absolute;
+    right: 30px;
+    top: 30px;
+}
+.page-content-wrapper.allwebbox hr {
+    display: block;
+    overflow: hidden;
+    width: 100%;
+    border-color: #00000012;
+}
+.page-content-wrapper.allwebbox h4,
+.page-content-wrapper.allwebbox h3,
+.page-content-wrapper.allwebbox h2
+{
+  overflow: hidden;
+  padding: 15px 0;
+  margin:0;
+  width:100%;
+}
+.sectionAllow {
+    background-color: #9999991a;
+    padding: 20px;
+    margin-bottom:30px;
+    overflow: hidden;
+    position: relative;
+}
+#JouurneynContent.sectionAllow.active{
+  overflow: visible;
+}
+input[name="name_form"]{
+  width:100%;
+  padding:10px;
+}
+div#basic_questions label {
+    margin-right: 20px;
+}
+div#personalized_questions .row {
+    /*-webkit-column-count: 2;
+    column-count: 2;*/
+    width: 100%;
+    /*-moz-column-count: 2;*/
+    -webkit-backface-visibility:hidden;
+    -moz-backface-visibility:hidden;
+    -o-backface-visibility:hidden;
+    backface-visibility:hidden;
+}
+.half.col-md-6 {
+    max-width: 550px;
+    float: left;
+    width: 50%;
+}
+div#basic_questions .row {
+    width: 100%;
+    overflow: hidden;
+}
+.allwebContentBdy{display:none;}
+.allwebContentBdy.active{display:block;}
+
+a.visiableSection.active {
+    transform: rotate(-180deg);
+}
+#formStyle .form-group {
+    overflow: hidden;
+    line-height: 40px;
+    margin-bottom: 5px;
+}
+.sqpart {
+    display: inline;
+    overflow: hidden;
+    /* width: 100%; */
+    /* float: left; */
+    margin-right: 14px;
+    border-right: 1px solid #ddd;
+    padding-right: 10px;
+}
+.sqpart.last{
+  border-right-width: 0px;
+}
+div#example_wrapper {
+    max-width: 98%;
+}
+ul#sortable1 li {
+    display: block;
+}
+.ui-state-highlight { height: 2em; line-height: 1.2em; background:#ff98006e; min-width: 50px; min-height: 20px; }
+
+
+.imgPreviewbImage img {
+    max-height: 150px;
+}
+div#basic_questions .ui-sortable li,
+div#personalized_questions li {
+    position: relative;
+    float: left;
+    width: 100%;
+    overflow: hidden;
+}
+div#basic_questions .ui-sortable li .actionbutton,
+div#personalized_questions li .actionbutton {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: none;
+}
+
+div#personalized_questions li .delete span {
+    font-size: 15px;
+    color: #8f0e0e;
+}
+div#basic_questions .ui-sortable li .edit span,
+div#personalized_questions li .edit span {
+    color: #0e668f;
+    line-height: 15px;
+    margin-right: 5px;
+}
+div#basic_questions .ui-sortable li:hover .actionbutton,
+div#personalized_questions li:hover .actionbutton{
+  display: block;
+}
+div#basic_questions .ui-sortable li .actionbutton > div,
+div#personalized_questions li .actionbutton > div {
+    float: left;
+    cursor: pointer;
+}
+.editablefield {
+    background: #e8e8e8;
+    padding: 10px;
+    float: left;
+    margin-bottom: 15px;
+    display: none;
+    width:100%;
+}
+.editablefield input {
+    max-width: 135px;
+    margin-top: 5px;
+    margin-bottom:5px; 
+}
+.ajaxSuccess {
+    display: inline-block;
+    line-height: 29px;
+    padding: 0 10px;
+}
+.ajaxSuccess span.success{
+    color: #21965f;
+}
+.ajaxSuccess span.fail{
+    color: #F44336;
+}
+.awbox-spinner {
+    background: url(img/wpspin_light-2x.gif) no-repeat;
+    background-size: 30px;
+    display: none;
+    float: right;
+    opacity: 1;
+    filter: alpha(opacity=70);
+    width: 100%;
+    height: 100%;
+    margin: 5px 5px 0;
+    background-color: #ffffff78;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-position: center center;
+}
+a.addnewOption {
+    text-decoration: none;
+    padding: 5px 0px;
+    display: inline-block;
+    margin-right:10px;
+}
+span.inputF{position:relative;}
+span.inputF span {
+    position: absolute;
+    right: -4px;
+    top: -4px;
+    font-size: 12px;
+    cursor: pointer;
+    display: none;
+}
+span.inputF span:hover {
+    color: #a81a0f;
+}
+span.inputF:hover span{
+  display: block;
+}
+.qoptionsList{margin-bottom:12px;}
+.bgff{background-color:#fff;}
+.wrap.email_templates {
+    overflow: hidden;
+    float: left;
+    width: 1100px;
+}
+.p20{padding:20px;}
+.emalitoptabs ul li {
+    display: inline-block;
+}
+.emalitoptabs ul li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 9px;
+    background: #5a4949;
+    border-radius: 3px 3px 0 0;
+}
+.emalitoptabs {
+    border-bottom: 1px solid #5a4949;
+    width: 100%;
+    overflow: hidden;
+}
+.emalitoptabs ul {
+    margin-bottom: 0;
+}
+.emalitoptabs ul li a.active,
+.emalitoptabs ul li a:hover {
+    background-color: #a44949;
+}
+.form-group .form-control {
+    width: 100%;
+}
+.p5{padding:5px;}
+.innermail .form-group {
+    margin-top: 10px;
+}
+div#addnewTemplateMsg,
+div#addnewCampaign,
+div#addnewTemplate {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    line-height: 41px;
+    float: left;
+    width:100%;
+}
+div#addnewTemplateMsg span,
+div#addnewCampaign span,
+div#addnewTemplate span {
+    font-size: 30px;
+    color: #0073aa;
+    cursor: pointer;
+}
+div#addnewTemplateMsg span:hover,
+div#addnewCampaign span:hover,
+div#addnewTemplate span:hover {
+    color: #FF5722;
+}
+.newTemplate {
+    margin-bottom: 30px;
+    position: relative;
+    background-color: #dddddd54;
+    float: left;
+    
+    padding: 20px;
+    width: 96%;
+}
+div.section table {
+    width: 100%;
+    border-collapse: collapse;
+}
+div.section table th, div.section table td {
+    border-top: 1px solid;
+    border-color: #ddd;
+    text-align: left;
+    padding:5px;
+}
+div.section table thead, div.section table tr:nth-child(even) {
+    background-color: #efefef87;
+}
+.camtempDelete,
+.objectDelete,
+.tempDelete{
+    top: 0;
+}
+.tempEditOjb,
+.tempEdit{
+    top:34px;
+}
+.tempEditOjb,
+.tempEdit,
+.objectDelete,
+.camtempDelete,
+.tempDelete {
+    position: absolute;
+    right: 0px;
+    cursor: pointer;
+    display: none;
+}
+
+.tempNewInner.active .tempEditOjb,
+.tempNewInner.active .tempEdit,
+.tempNewInner.active .camtempDelete,
+.tempnewInner.active .objectDelete,
+{
+    display: block;
+}
+
+.tempEditOjb span,
+.tempEdit span{
+    background-color: #2f353b;    
+}
+.objectDelete span,
+.camtempDelete span,
+.tempDelete span{
+    background-color: #0085ba;
+}
+.tempEditOjb span,
+.tempEdit span,
+.camtempDelete span,
+.objectDelete span,
+.tempDelete span {
+    color: #fff;
+    padding: 3px;
+}
+.tempEditOjb span:hover,
+.tempEdit span:hover{
+  background-color: #f98016;  
+}
+.objectDelete span:hover,
+.camtempDelete span:hover,
+.tempDelete span:hover {
+  background-color: #9e1010;
+}
+
+.newTemplate:hover .tempEditOjb,
+.newTemplate:hover .tempEdit,
+.newTemplate:hover .objectDelete,
+.newTemplate:hover .camtempDelete,
+.newTemplate:hover .tempDelete{
+  display: block;
+}
+div#allJourney caption {
+    font-size: 20px;
+    line-height: 50px;
+    background-color: #607d8b3b;
+}
+.form-group .place_questions .form-control,
+.form-group select.form-control {
+    width: unset;
+}
+ 
+.sectionAllow.active {
+   /* overflow: visible;*/
+}
+input.fstQueryInput.fstQueryInputExpanded,
+#formjourneyncontent input.fstQueryInput.fstQueryInputExpanded {
+    font-size: 15px;
+    padding:0;
+}
+.fstResultItem,
+.fstChoiceItem,
+#formjourneyncontent .fstResultItem,
+#formjourneyncontent .fstChoiceItem{
+  font-size: 15px;
+}
+#formjourneyncontent .fstMultipleMode .fstControls,
+.fstMultipleMode .fstControls,
+.fstElement.fstMultipleMode
+{
+  width:100%;
+}
+#wpfooter {
+    position: relative;
+    margin-top: 50px;
+    overflow: hidden;
+}
+
+.crm input[type="text"]
+{
+  width:100%;
+  margin-bottom: 5px;
+}
+.crm .col-md-3 {
+    max-width: 185px;
+    float: left;
+    padding: 0px 20px 18px 0px;
+}
+.crm .col-md-3.last {
+    padding-right: 0;
+}
+.crm #custom_questions .col-md-3 {
+    max-width: unset;
+    width: 498px;
+}
+
+table.table.table-striped th,
+table.table.table-striped td {
+    border-bottom: 1px solid #eee;
+    padding: 5px;
+}
+div#detailsInfor table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.table.table-striped tr th:first-child,
+table.table.table-striped tr td:first-child
+{
+  border-right:1px solid #eee;
+  width:30%;
+}
+table.table.table-striped tr th:last-child,
+table.table.table-striped tr td:last-child
+{
+  text-align: center;
+}
+div#detailsInfor table tr:nth-child(even), div#detailsInfor table thead {
+    background-color: #ccc;
+}
+.mt20{margin-top:20px;}
+.mt5{margin-top:5px;}
+.mt10{margin-top:10px;}
+.mt15{margin-top:15px;}
+.mt30{margin-top:30px;}
+.mt40{margin-top:40px;}
+.mt50{margin-top:50px;}
+
+
+.pt20{padding-top:20px;}
+.pt5{padding-top:5px;}
+.pt10{padding-top:10px;}
+.pt15{padding-top:15px;}
+.pt30{padding-top:30px;}
+.pt40{padding-top:40px;}
+.pt50{padding-top:50px;}
+
+table.table.table-striped tbody tr th:first-child{
+  text-align: left;
+}
+div#sendSelectedEmail .form-group {
+    margin-bottom: 15px;
+}
+span.semail:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    height: 10px;
+    width: 10px;
+    background-color: #3f51b599;
+    border-radius: 90px;
+    top: 6px;
+}
+span.semail {
+    position: relative;
+    padding-left: 12px;
+    margin-left: 12px;
+}
+.email_campains label {
+    display: block;
+}
+.email_campains select{
+  width:100%;
+}
+div#addnewEfield {
+    display: inline-block;
+    color: #3F51B5;
+    cursor: pointer;
+    margin-left: 5px;
+}
+div#addnewEfield:hover {
+    color: #1e244c;
+}
+.sEmdiv {
+    display: inline-block;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    position: relative;
+}
+.sEmdiv span.deleteThisEmail {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: none;
+}
+.sEmdiv:hover span.deleteThisEmail{
+  display: block;
+}
+.sEmdiv span.deleteThisEmail:hover {
+  color: #c52929;
+  cursor: pointer;
+}
+
+div#detailsInfor table tr td span.edit {
+    background: #009688;
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #fff;
+    height: 100%;
+    line-height: 27px;
+    padding: 0px 5px;
+    cursor: pointer;
+    display: none;
+}
+div#detailsInfor table tr td span.edit:hover {
+    background: #FF5722;
+}
+div#detailsInfor table tr td{position:relative;}
+div#detailsInfor table tr td:hover span.edit{
+  display: block;
+}
+div#detailsInfor table tr td input[type="text"] {
+    margin: 0;
+    padding: 2px;
+    max-width: 600px;
+    text-align: center;
+}
+div#detailsInfor table tr td span.edit.dashicons-no{
+  background-color: #795548;
+  line-height: 35px;  
+}
+
+.msgDisplay {
+    background-color: #673ab763;
+    padding: 5px;
+}
+div#successMsg span {
+    color: #fff;
+    display: block;
+    padding: 8px;
+    font-size: 16px;
+}
+div#successMsg span {
+    color: #fff;
+    display: block;
+    padding: 8px;
+    font-size: 16px;
+}
+div#successMsg span.bg-success {
+   background: #4CAF50;
+}
+div#successMsg span.bg-error {
+   background: #F44336;
+}
+div#custom_questions .radio {
+    margin-top: 1px;
+    margin-bottom: 4px;
+    background: #fff;
+    padding: 3.5px 5px;
+}
+div#editJourney .half,
+div#newjourney .half {
+    max-width: 48%;
+    float: left;
+    margin-right: 20px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+div#editJourney .half.right,
+div#newjourney .half.right {
+    margin-right: 0;
+    float: right;
+}
+.newTemplate .three-half {
+    float: left;
+    width: 340px;
+    margin-right: 15px;
+}
+.newTemplate .three-half.right{
+  float: right;
+  margin-right: 0px;
+}
+ul.usParementslist li {
+    display: inline-block;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.userParemeters {
+    display: block;
+    overflow: hidden;
+    float: left;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.sectionAllow .ui-state-default {
+    border-width: 0px;
+}
+
+.subject.full {
+    display: block;
+    float: left;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.newTemplate > div[unselectable="on"] {
+    min-width: 100%;
+}
+div#msg .success {
+    color: #fff;
+    padding: 0px 25px;
+    overflow: hidden;
+    display: block;
+    position: relative;
+    /* float: left; */
+    /* width: 100%; */
+    margin-bottom: 20px;
+}
+div#msg .msg h5 {
+    margin: 10px 0;
+}
+div#msg .success{
+  background: #2196F3;
+}
+div#msg .error{
+  background: #F44336;
+}
+
+.messagensms {
+    max-width: 98%;
+    margin-top: 20px;
+}
+.innermail.sms {
+    display: block;
+    overflow: hidden;
+    background: #fff;
+    padding: 20px;
+}
+div#iconBanner {
+    display: block;
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 20px;
+}
+div#iconBanner > div {
+    width: 80px;
+    height: 80px;
+    border: 1px dotted #aaa;
+    display: table;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+}
+div#iconBanner > div span {
+    display: table-cell;
+    height: 100%;
+    vertical-align: middle;
+}
+div#iconBanner > div:hover {
+    background-color: #9e9e9e24;
+    transition: all 0.3s ease 0s;
+    -moz-transition: all 0.3s ease 0s;
+    -webkit-transition: all 0.3s ease 0s;
+    -o-transition: all 0.3s ease 0s;
+}
+
+.info.filter {
+    width: 100%;
+    margin-left: 0;
+    margin-bottom: 10px;
+}
+div#savedFilterBody i.fa {
+    background: #79554891;
+    padding: 2px 5px;
+    color: #fff;
+    cursor: pointer;
+    float: right;
+}
+div#savedFilterBody p {
+    width: 100%;
+    display: block;
+    float: left;
+    margin-bottom: 10px;
+    background-color: #ddd;
+    padding:5px;
+}
+div#savedFilterBody i.fa:hover {
+    background-color: #72777c;
+}
+.filtrDescription {
+    margin-bottom: 30px;
+}
+div#savedFilterBody {
+    max-width: 98%;
+}
+.float-right {
+    float: right;
+}
+div#importExport {
+    overflow: hidden;
+    float: left;
+    width: 100%;
+}
+div#importExport .portlet.light{overflow: hidden;}
+.threehalf {
+    max-width: 25%;
+    float: left;
+    width: 25%;
+}
+.threehalf.bttn {
+    text-align: center;
+}
+body.smart-marketing_page_crm #wpbody-content{
+  padding-bottom: 0;
+}
+.threehalf.bttn .button {
+    display: inline-block;
+    margin-top:13px;
+}
+p.fileInst {
+    position: absolute;
+    left: 22px;
+    top: 20px;
+}
+div#csvSuccess > div.message {
+    text-align: center;
+    background: #0085ba;
+    color: #ffff;
+    padding: 6px;
+}
+div#addToJourneyForm {
+    max-width: 400px;
+    background-color: #ddd;
+    padding: 15px;
+    margin-top: 20px;
+}
+select#alljourney.error {
+    border-color: #f36a5a;
+}
+.SlidingP span.dashicons {
+    font-size: 35px;
+    /* position: absolute; */
+    /* top: -7px; */
+    /* left: -7px; */
+    cursor: pointer;
+    color: #0073aa;
+    line-height: 22px;
+    margin-left: -5px;
+}
+.SlidingP {
+    font-size: 15px;
+    cursor: pointer;
+}
+.tempNewInner.tmhidden{
+  overflow: hidden;
+  max-height:0px !important; 
+}
+div#newjourney input,
+div#newjourney select,
+div#editJourney input {
+    background: #efefef;
+}
+.innermail > form > div.three-half {
+    width: 355px;
+    float: left;
+    margin-right: 15px;
+}
+.innermail > form > div.three-half.right{margin-right: 0px;}
+div#searchReasult_wrapper input.hidden {
+    display: none;
+}
+.newTemplate .mce-tinymce {
+    overflow: hidden;
+}
+div#saveEmailStyle i.fa {
+    background: none;
+    padding: 2px 5px;
+    color: #000;
+    cursor: pointer;
+    float: right;
+}
+div#saveEmailStyle a.tooltips {
+    position: relative;
+    display: inline-block;
+    width: 26px;
+    float: none;
+    font-size: 12px;
+}
+div#saveEmailStyle i.fa {
+    background: none;
+    padding: 2px 5px;
+    color: #000;
+    cursor: pointer;
+    float: right;
+}
+div#saveEmailStyle a.tooltips span {
+    width: 150px !important;
+    left: 100% !important;
+    line-height: 25px;
+}
+#saveEmailStyle .form-group {
+    background: #dfdfdf;
+    padding: 10px;
+}
+#saveEmailStyle .col-md-6.half.left {
+    margin-right: 1%;
+}
+#saveEmailStyle .col-md-6.half.right {
+    margin-left: 1%;
+}
+#saveEmailStyle .col-md-6.half {
+    width: 49%;
+}
+div#modiF_bg_img a {
+    padding: 20px;
+    text-align: center;
+    display: block;
+    text-decoration: none;
+}
+div#modiF_bg_img{cursor: pointer; position: relative;}
+div#modiF_bg_img img {
+    margin: 0 auto; 
+    display: block;
+    max-width: 100%; 
+}
+div#modiF_bg_img .dlt {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #333;
+}
+div#modiF_bg_img .dlt:hover {
+    color: #d50303;
+}
+div#saveEmailStyle select {
+    width: 100%;
+}
+.innerSendEmail div.replay.name {
+    margin-right: 4%;
+}
+.innerSendEmail div.replay {
+    width: 48%;
+    float: left;
+    overflow: hidden;
+    display: block;
+    position: relative;
+}
+.threQrtr {
+    max-width: 30.33%;
+    float: left;
+    width: 507px;
+    margin-right: 30px;
+    margin-bottom: 20px;
+}
+.threQrtr.right{margin-right:0px; float: right;}
+.newTemplate.emailCampaign .SlidingP input {
+    width: 90%;
+}
+.newTemplate.emailCampaign .SlidingP span{vertical-align: middle;}
+div.addnewSubObjective span:hover,
+div.addnewSubCampaign span:hover {
+    color: #0073aa;
+    cursor: pointer;
+}
+div.addnewSubObjective,
+div.addnewSubCampaign {margin-top: 20px;}
+div.addnewSubObjective span,
+div.addnewSubCampaign span{
+    font-size:18px;
+}
+.newTemplate.newSubCampaign div.three {
+    max-width: 50%;
+    float: left;
+    width: 50%;
+}
+.newTemplate.newSubCampaign div.three select {
+    width: 90%;
+}
+div#innersendTo span {
+    text-align: left;
+    float: left;
+}
+
+.newTemplate.newObjectiveW input[type="text"],
+.newTemplate.newSubCampaign input[type="text"] {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 5px;
+}
+.newTemplate.newSubCampaign div.three.thr select {
+    width: 100%;
+}
+.deleteSubObj,
+.deleteSubCamp {
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    display: none;
+}
+.deleteSubObj:hover,
+.deleteSubCamp:hover{
+    color: #870707;
+}
+.newTemplate.newObjectiveW:hover .deleteSubObj,
+.newTemplate.newSubCampaign:hover .deleteSubCamp{
+    display: block;
+}
+.subCamptitle.title h4 {
+    margin: 0;
+    cursor: pointer;
+    max-width: 95%;
+    float: left;
+    width: 95%;
+}
+.wrap.email_campains {
+    width: 96%;
+    float: left;
+    margin-top: 20px;
+}
+.subCamptitle.title div.actionEmail span {
+    font-size: 60px;
+    transform: rotate(180deg);
+    width: 100%;
+    height: 100%;
+}
+.subCamptitle.title div.actionEmail {
+    float: left;
+    position: absolute;
+    right: 25px;
+    top: -1px;
+    display: block;
+    overflow: hidden;
+    height: 100%;
+    width: 60px;
+    cursor: pointer;
+}
+.subCamptitle.title div.actionEmail:hover span {
+    color: #0073aa;
+    transition: all .5s ease 0s;
+    -o-transition: all .5s ease 0s;
+    -webkit-transition: all .5s ease 0s;
+    -moz-transition: all .5s ease 0s;
+}
+.wrap.email_campains .form-group.first {
+    overflow: hidden;
+    width: 100%;
+}
+.wrap.email_campains .form-group .half {
+    float: left;
+    min-width: 50%;
+}
+a.button.button-primary.button-bigger {
+    height: 40px;
+    width: 180px;
+    font-size: 20px;
+    text-align: center;
+    line-height: 38px;
+    float: right;
+}
+.form-group.selectSubCampaign select,
+.form-group.selectCampaign select{
+    width: 100%;
+}

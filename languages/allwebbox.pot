@@ -1,0 +1,8 @@
+msgctxt "sms & message settings"
+msgid ""
+msgstr ""
+
+msgctxt "All Brand's"
+msgid ""
+msgstr ""
+
