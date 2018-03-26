@@ -49,29 +49,37 @@ if(isset($_POST['sendto'])){
 ?>
 
 	<div class="wrap email_campains bgff p20">
-		<?php if(!isset($_GET['objectives'])): ?>
+		<?php if(!isset($_GET['campains'])): ?>
+			<?php require_once(ALWEBDIR . 'inc/objectives.php'); ?>
+		<?php else: //if(!isset($_GET['objectives'])): ?>
 		<div style="overflow:hidden;" id="sendSelectedEmail" class="innerpageallwebbox">
 				<div class="suecessMessage">
 					<?php echo (isset($query))?$msg:''; ?>
 				</div>
 				<div class="form-group first">
-					<div class="half left">
-						<label for="campainfor">Email Campaign for</label>
-						<select class="form-control" id="campainfor" name="campainfor">
-							<option value="registered">Registered User</option>
-							<option value="new">New User</option>
-						</select>
+					<div class="half left <?php echo (!isset($_GET['send_mails']))?'opacity0':''; ?>">
+							<label for="campainfor">Email Campaign for</label>
+							<select class="form-control" id="campainfor" name="campainfor">
+								<option value="registered">Registered User</option>
+								<option value="new">New User</option>
+							</select>
+
 					</div>
 					<div class="half right">
 					<?php 
-						$queryst = http_build_query(array('send_mails' => $_GET['send_mails']));	
+						$queryst =(isset($_GET['send_mails']))?http_build_query(array('send_mails' => $_GET['send_mails'])):'';	
 					?>
-					<a href="<?php echo admin_url( $path = '/admin.php?objectives=1&page=email_markeging_campaigns&' . $queryst, $scheme = 'admin' ); ?>" class="button button-primary button-bigger"><?php echo __('Objectives', 'allwebbox'); ?></a>
+					<?php if(isset($_GET['send_mails'])): ?>
+					<a href="<?php echo admin_url( $path = '/admin.php?page=my-menu&' . $queryst, $scheme = 'admin' ); ?>" class="button button-primary button-bigger"><?php echo __('Objectives', 'allwebbox'); ?></a>
+				<?php else: ?>
+					<a href="<?php echo admin_url( $path = '/admin.php?page=my-menu', $scheme = 'admin' ); ?>" class="button button-primary button-bigger"><?php echo __('Objectives', 'allwebbox'); ?></a>
+				<?php endif; ?>
 					</div>
 				</div>
+				<?php if(isset($_GET['send_mails'])): ?>
 				<div class="form-group" style="overflow:hidden;">
 			      <div class="toEmail" id="sendTo">
-			        <label>Send To</label>
+			        <label><?php echo __('Send To', 'allwebbox'); ?></label>
 			        <div id="innersendTo">
 				        <?php foreach(array_unique($_GET['send_mails']) as $se): ?>
 				          <input type="hidden" name="sendto[]" value="<?php echo $se; ?>">
@@ -80,17 +88,15 @@ if(isset($_POST['sendto'])){
 			    	</div>
 			      </div>
 			    </div>
-
+				<?php endif; ?>
 			     <div class="userParemeters" id="campaignPrameter">
-		            <label>User Parameters <span alt="f139" class="dashicons dashicons-arrow-right"></span></label>
+		            <label><?php echo __('User Parameters', 'allwebbox'); ?> <span alt="f139" class="dashicons dashicons-arrow-right"></span></label>
 		            <ul class="usParementslist hidden">
 		              <?php foreach($columns as $sCl): ?>
 		                <li data-param="<?php echo $sCl; ?>">[<?php echo $sCl; ?>]</li>
 		              <?php endforeach; ?>
 		            </ul>
-		            
 		          </div>
-
 		        <?php foreach($allCamps as $sCmp): 
 		        	$scampaigns = $wpdb->get_results('SELECT * FROM '.$tbl_subcampaign.' WHERE cid='.$sCmp->id.'', OBJECT);
 		        	$sub_obs = ($sCmp->sub_obj != '')?json_decode($sCmp->sub_obj):array();
@@ -148,9 +154,11 @@ if(isset($_POST['sendto'])){
 	 					<div class="subCamptitle title">
 	 						<div class="titleInner">
 	 							<h4><span alt="f345" class="dashicons dashicons-arrow-right-alt2"></span>&nbsp;<?php echo $each->scmp_name; ?></h4>
-	 							<div class="actionEmail" data-subcid="<?php echo $each->id; ?>">
-	 								<span alt="f148" class="dashicons dashicons-admin-collapse"></span>
-	 							</div>
+	 							<?php if(isset($_GET['send_mails'])): ?>
+		 							<div class="actionEmail" data-subcid="<?php echo $each->id; ?>">
+		 								<span alt="f148" class="dashicons dashicons-admin-collapse"></span>
+		 							</div>
+	 							<?php endif; ?>
 	 						</div>
 	 					</div>
 	 					<div class="wrap hidden email_campains bgff p20">
@@ -212,7 +220,7 @@ if(isset($_POST['sendto'])){
 							<select id="loadExistingTemplate" name="loadTemplate">
 							<option value=""><?php echo __('Load Template...', 'allwebbox'); ?></option>
 							<?php 
-								$exTemplates 	= $this->wpdb->get_results('SELECT * FROM '.$template_table.'', OBJECT);
+								$exTemplates 	= $wpdb->get_results('SELECT * FROM '.$template_table.'', OBJECT);
 								foreach($exTemplates as $tmplt) echo '<option value="'.$tmplt->id.'">'.$tmplt->name.'</option>';
 							?>
 
@@ -243,8 +251,6 @@ if(isset($_POST['sendto'])){
 		    	<?php endforeach; ?>
 				<div id="addnewCampaign" class="newCamp"><span alt="f502" class="dashicons dashicons-plus-alt"></span></div>
 		</div>
-		<?php else: //if(!isset($_GET['objectives'])): ?>
-			<?php require_once(ALWEBDIR . 'inc/objectives.php'); ?>
 		<?php endif; //if(!isset($_GET['objectives'])): ?>
 
 

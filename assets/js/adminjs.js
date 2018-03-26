@@ -39,9 +39,9 @@ function showOptionAnswers(id,parent){
 
 jQuery(document).ready(function($){
 	//Create from content toggle
-	$('div#basic_questions').addClass('active');
-	$('div#basic_questions').closest('.sectionAllow').addClass('active');
-	$('a#visiableBasicQuestion').addClass('active');
+	//$('div#basic_questions').addClass('active');
+	//$('div#basic_questions').closest('.sectionAllow').addClass('active');
+	//$('a#visiableBasicQuestion').addClass('active');
 	$(document.body).on('click', '.visiableSection', function(){
 		$(this).closest('.form-group').next('.allwebContentBdy').toggleClass('active');
 		$(this).closest('.sectionAllow').toggleClass('active');
@@ -450,6 +450,7 @@ jQuery(document).ready(function($){
 						// Sub-Campaign Name
 						+ '<input type="text" name="sub_obj" class="form-control" value="" placeholder="Sub-Objective..." />'
 
+						+ '<div class="subObjDesc"><textarea class="form-control" style="width:100%;" rows="4" name="sub_desc"></textarea></div>'
 						// End Sub-Campaign Name
 
 						+ '<input type="submit" name="scampain_submit" value="Submit" class="button button-primary" />'
@@ -864,11 +865,25 @@ jQuery(document).ready(function($){
     * Load Email Template
     */
     $(document.body).on('change', 'select#loadExistingTemplate', function(){
+    	$('.awbox-spinner').show();
     	var val 	= $(this).val();
-    	var thisUrl = window.location.href;
-    	var newUrl 	= thisUrl + '&ltmpid=' + val;
+    	var thisI = $(this);
     	if(val){
-    		window.location = newUrl;	
+    		$.ajax({
+					type:'POST', 
+			        //dataType: 'json',
+			        url: webbox,
+			        data:
+			            {
+			                'action'	: 'loadTemplateFunction',
+			                'val'		: val
+			            },success:function(data){
+			            			console.log(data);
+			            			$('.awbox-spinner').hide();
+			            			thisI.closest('.form-group').find('.visualTextArea').find('textarea').val(data);
+			            }
+
+    			}); // Ajax
     	}
     	
     });
@@ -1199,7 +1214,11 @@ jQuery(document).ready(function($){
 	  		var exID = $(this).data('exid');
 	  		var ObjID = $(this).data('campaign');
 	  		var subObj 		= $(this).find('input[name="sub_obj"]').val();
+	  		var ob_desc 	= $(this).closest('.newTemplate.newObjectiveW').find('textarea[name="ob_desc"]').val();
 	  		var ObjectName 	= $(this).closest('.newTemplate.newObjectiveW').find('input[name="objective_name"]').val();
+	  		var sub_desc 	= $(this).find('textarea[name="sub_desc"]').val();	
+
+	  		console.log('ob_desc:  ' + ob_desc );
 			   
 			    $.ajax({
 						type:'POST', 
@@ -1210,8 +1229,10 @@ jQuery(document).ready(function($){
 			                'action'		: 'storeObjective',
 			                'sub_obj'		: subObj,
 			                'objective_name': ObjectName,
+			                'ob_desc' 		: ob_desc,
 			                'exid' 			: exID,
-			                'ObjID' 		: ObjID
+			                'ObjID' 		: ObjID,
+			                'sub_desc' 		: sub_desc
 			            },success:function(data){
 			            			console.log(data);
 			            			$('.awbox-spinner').hide();
@@ -1439,11 +1460,12 @@ jQuery(document).ready(function($){
 				        +'</div>'
 
 		     			+'<div class="tempNewInner tmhidden">'
+				          
 				          +'<div class="camtempDelete">'
 				              +'<span alt="f158" class="dashicons dashicons-no"></span>'
 				          +'</div>'
 
-	    					+'<div class="addnewSubCampaign"><span alt="f502" class="dashicons dashicons-plus-alt"></span></div>'
+	    				  +'<div class="addnewSubCampaign"><span alt="f502" class="dashicons dashicons-plus-alt"></span></div>'
 				      	+'</div>'
 		        	+'</div>';
 	
@@ -1458,6 +1480,9 @@ jQuery(document).ready(function($){
 				        +'</div>'
 
 		     			+'<div class="tempNewInner tmhidden">'
+
+		     			+ '<div class="ob_desc"><textarea class="form-control" style="width:100%;" rows="4" name="ob_desc"></textarea></div>'
+
 				          +'<div class="objectDelete">'
 				              +'<span alt="f158" class="dashicons dashicons-no"></span>'
 				          +'</div>'

@@ -20,8 +20,4 @@ require_once(ALWEBDIR . 'class/allwebClass.php');
 require_once(ALWEBDIR . 'inc/bb-custom-module/fl-custom-module.php');
 require_once(ALWEBDIR . 'inc/sendgrid-email-delivery-simplified/wpsendgrid.php');
 
-$plugin_rel_path = ALWEBURL . '/languages'; /* Relative to WP_PLUGIN_DIR */
-
-//$plugin_rel_path = basename( dirname( __FILE__ ) ) . '/languages'; /* Relative to WP_PLUGIN_DIR */
-load_plugin_textdomain( 'allwebbox', true, $plugin_rel_path );
 new Allwebbox();

@@ -52,8 +52,8 @@ class Allwebbox{
 
 	private function init(){
 		
+		
 		add_filter('gettext', array($this, 'allwebbox_cpt_text_filter'), 20, 3);
-
 
 		add_action('admin_menu',array($this,'clivern_plugin_top_menu'));
 		add_shortcode('form-custom',array($this,'front_end'));
@@ -121,6 +121,10 @@ class Allwebbox{
 		/*Select Sub Object for related Campaign */
 		add_action('wp_ajax_nopriv_selectRltSubObject', array($this, 'selectRltSubObject'));
 		add_action( 'wp_ajax_selectRltSubObject', array($this, 'selectRltSubObject') );
+
+		/*Lode Existing Email Template */
+		add_action('wp_ajax_nopriv_loadTemplateFunction', array($this, 'loadTemplateFunction'));
+		add_action( 'wp_ajax_loadTemplateFunction', array($this, 'loadTemplateFunction') );
 
 
 		
@@ -232,6 +236,7 @@ class Allwebbox{
 		    $sqlo = "CREATE TABLE $this->tbl_objective (
 		         id int(10) NOT NULL AUTO_INCREMENT,
 		         objective_name varchar(500) NOT NULL,
+		         ob_desc text NOT NULL, 
 		         created_dt timestamp NOT NULL,
 		         UNIQUE KEY id (id)
 		    ) $charset_collate;";
@@ -250,6 +255,7 @@ class Allwebbox{
 		         id int(20) NOT NULL AUTO_INCREMENT,
 		         oids int(10) NOT NULL,
 		         sub_obj varchar(500) NOT NULL,
+		         sub_desc text NOT NULL,
 		         created_dt timestamp NOT NULL,
 		         UNIQUE KEY id (id)
 		    ) $charset_collate;";
@@ -537,14 +543,20 @@ class Allwebbox{
 
 	/**Create admin menu**/
 	public function clivern_plugin_top_menu(){
-	add_menu_page(__('Smart Marketing', 'allwebbox'), __('Smart Marketing', 'allwebbox'), 'manage_options', 'my-menu', array(&$this,'clivern_render_plugin_page'),'dashicons-admin-users' );
-	    add_submenu_page('my-menu', 'Crear formulario', 'Crear formulario', 'manage_options', 'my-menu' );
+	add_menu_page(__('Smart Marketing', 'allwebbox'), __('Smart Marketing', 'allwebbox'), 'manage_options', 'my-menu', '','dashicons-admin-users' );
+	   
+		/*Email Marketing Campaigns*/
+	    add_submenu_page('my-menu', __('Strategy', 'allwebbox'), __('Strategy', 'allwebbox'), 'manage_options', 'my-menu', array(&$this,'email_markeging_campaigns'));
+
+	    /*CRM*/
+	   	add_submenu_page('my-menu', __('CRM', 'allwebbox'), __('CRM', 'allwebbox'), 'manage_options', 'crm', array(&$this,'crm'));
+
+	    add_submenu_page('my-menu', __('Create form', 'allwebbox'), __('Create form', 'allwebbox'), 'manage_options', 'create_new', array(&$this,'clivern_render_plugin_page'));
 		add_submenu_page('my-menu', 'Ver formularios', 'Ver formularios', 'manage_options', 'all_forms', array(&$this,'all_forms'));
-	    add_submenu_page('my-menu', 'CRM', 'CRM', 'manage_options', 'crm', array(&$this,'crm'));
+
 	    add_submenu_page('my-menu', 'Campañas automatizadas', 'Campañas automatizadas', 'manage_options', 'email_marketing', array(&$this,'email_marketing'));
 	    add_submenu_page('my-menu', 'All Form Entries', 'Form Entries', 'manage_options', 'all_form_entries', array(&$this,'all_form_entries'));
-	    /*Email Marketing Campaigns*/
-	    add_submenu_page(null, 'EMAIL MARKETING CAMPAIGNS', 'Email Marketing Campaigns', 'manage_options', 'email_markeging_campaigns', array(&$this,'email_markeging_campaigns'));
+	    
 
 	    /*Email Template */
 	    add_submenu_page('my-menu', 'Email Template', 'Email Templates', 'manage_options', 'email_templates', array(&$this,'email_templates'));
@@ -2341,8 +2353,10 @@ class Allwebbox{
 	function storeObjective(){
 		$objective_name 	= $_POST['objective_name'];
 		$sub_obj 			= $_POST['sub_obj'];
-		$exid 	 = (isset($_POST['exid']))?$_POST['exid']:'';
-		$campID  = (isset($_POST['ObjID']))?$_POST['ObjID']:'';
+		$exid 	 			= (isset($_POST['exid']))?$_POST['exid']:'';
+		$campID  			= (isset($_POST['ObjID']))?$_POST['ObjID']:'';
+		$ob_desc 			= (isset($_POST['ob_desc']))?$_POST['ob_desc']:'';
+		$sub_desc 			= (isset($_POST['sub_desc']))?$_POST['sub_desc']:'';
 
 		$exitObj = $this->wpdb->get_row('SELECT `id` FROM '.$this->tbl_objective.' WHERE objective_name="'.$objective_name.'"', OBJECT);
 
@@ -2363,12 +2377,26 @@ class Allwebbox{
 		}elseif(!$exitObj){
 			$insert = $this->wpdb->insert(
 						$this->tbl_objective,
-						array('objective_name' => $objective_name),
-						array('%s')
+						array(
+							'objective_name' 	=> $objective_name,
+							'ob_desc' 			=> $ob_desc
+						),
+						array('%s', '%s')
 					);
 			$objID = $this->wpdb->insert_id;
 			echo $objID;
 		}else{
+			$update = $this->wpdb->update(
+					$this->tbl_objective,
+					array(
+							'objective_name' 	=> $objective_name,
+							'ob_desc' 			=> $ob_desc
+					),
+					array('id' => $exitObj->id),
+					array('%s', '%s'),
+					array('%d')
+
+			);
 			$objID = $exitObj->id;	
 		}
 
@@ -2378,9 +2406,10 @@ class Allwebbox{
 					$this->tbl_subobjective,
 					array(
 						'sub_obj' 	=> $sub_obj,
+						'sub_desc' 	=> $sub_desc
 					),
 					array('id' => (int)$exid),
-					array('%s'),
+					array('%s', '%s'),
 					array('%d')
 				);
 
@@ -2395,9 +2424,11 @@ class Allwebbox{
 					array(
 						'oids' 		=> $objID,
 			         	'sub_obj' 	=> $sub_obj,
+			         	'sub_desc' 	=> $sub_desc
 					),
 					array(
 						'%d',
+						'%s',
 						'%s'
 					)	
 				);
@@ -2487,8 +2518,10 @@ class Allwebbox{
 	        case 'sms & message settings':
 	          $translated_text = __( 'Translated Text Here','allwebbox' );
 	        break;
-
 	        case "All Brand's":
+	          $translated_text = __( 'Translated Text Here','allwebbox' );
+	        break;
+	        case "Saved Filter":
 	          $translated_text = __( 'Translated Text Here','allwebbox' );
 	        break;
 
@@ -2497,6 +2530,19 @@ class Allwebbox{
 	   }
 	   return $translated_text;
 	}
+
+
+
+	/*
+	* Load Existing Template 
+	*/
+	function loadTemplateFunction(){
+		$val = (isset($_POST['val']))?$_POST['val']:'';
+		$tmpData = $this->wpdb->get_row('SELECT `tmplate` FROM '.$this->template_table.' WHERE id='.$val.'');
+		echo $tmpData->tmplate;
+		die();
+	}
+
 
 
 } // End Class

@@ -1015,3 +1015,12 @@ a.button.button-primary.button-bigger {
 .form-group.selectCampaign select{
     width: 100%;
 }
+.opacity0{opacity: 0 !important;}
+.toEmail label {
+    display: block;
+}
+#sendSelectedEmail .visualTextArea {
+    float: left;
+    width: 100%;
+    margin-bottom: 50px;
+}

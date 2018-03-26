@@ -4,7 +4,7 @@
 */
 if(isset($_GET['a_action']) && $_GET['a_action'] == 'Start Campaign'){
 	$query = http_build_query(array('send_mails' => $_GET['send_mails']));	
-	wp_redirect( admin_url( $path = '/admin.php?page=email_markeging_campaigns&' . $query, $scheme = 'admin' ), $status = 302 );
+	wp_redirect( admin_url( $path = '/admin.php?page=my-menu&campains=1' . $query, $scheme = 'admin' ), $status = 302 );
 }
 
 
@@ -22,6 +22,7 @@ function wpdocs_set_html_mail_content_type() {
 
 global $wpdb;
 $entryTable   = $wpdb->prefix . 'awe_entry';
+$template_table 	= $wpdb->prefix . 'template_table';
 $smsAll = array_map('trim',array_filter($_GET['send_sms']));
 $smsAll = array_unique($smsAll);
 $smsAll = implode(',', $smsAll);
@@ -157,12 +158,12 @@ if(isset($_POST['smail']) && $_POST['selectType'] == 'email'){
 	    </div>
 	   <div class="form-group email" style="overflow:hidden;">
 	      <div class="replay name">
-	        <label for="replay"><?php echo __('Email Replay Name', 'allwebbox'); ?></label>
+	        <label for="replay"><?php echo __('Name of who sends', 'allwebbox'); ?></label>
 	        <input style="max-width:99%;" type="text" class="form-control" name="replay" id="replay" value="<?php echo (isset($_POST['replay']))?$_POST['replay']:''; ?>" />
 	      </div>
 
 	      <div class="replay email" style="float:right;">
-	        <label for="replay_email"><?php echo __('Replay Email', 'allwebbox'); ?></label>
+	        <label for="replay_email"><?php echo __('Response Email', 'allwebbox'); ?></label>
 	        <input style="max-width:99.90%;" type="text" class="form-control" name="replay_email" id="replay_email" value="<?php echo (isset($_POST['replay_email']))?$_POST['replay_email']:''; ?>" />
 	      </div>
 	    </div>
@@ -179,8 +180,27 @@ if(isset($_POST['smail']) && $_POST['selectType'] == 'email'){
 	    	</select>
 	    </div>-->
 	    <div class="form-group">
+	    <div class="halfDiv">
 	        <div class="smail">
-	          <label for="smail">Content</label>
+
+		        <div class="pull-left">
+		          <label for="smail">Content</label>
+		      	</div>
+		      	<div class="pull-right">
+							<div class="inlinelabel">
+							<label for="loadExistingTemplate"></label>
+							<select id="loadExistingTemplate" name="loadTemplate">
+							<option value=""><?php echo __('Load Template...', 'allwebbox'); ?></option>
+							<?php 
+								$exTemplates 	= $wpdb->get_results('SELECT * FROM '.$template_table.'', OBJECT);
+								foreach($exTemplates as $tmplt) echo '<option value="'.$tmplt->id.'">'.$tmplt->name.'</option>';
+							?>
+
+							</select>
+							</div>
+				</div>
+
+
 	          <?php 
 	          	$bodyVal = '';
 	          	$smsBody = '';
@@ -197,10 +217,14 @@ if(isset($_POST['smail']) && $_POST['selectType'] == 'email'){
 	          		$bodyVal .= '</ol>';
 	          	}
 	          ?>
-	          <textarea style="min-height:250px;" id="smail" class="form-control tinymce" name="smail"><?php echo $bodyVal; ?></textarea>
+	          	<div class="visualTextArea">
+	        	  <textarea style="min-height:250px;" id="smail" class="form-control tinymce" name="smail"><?php echo $bodyVal; ?></textarea>
+	      		</div>
 	          <textarea style="min-height:150px;" id="smail_sms" class="form-control normal hidden" name="smail_sms"><?php echo $smsBody; ?></textarea>
 	        </div>
 	    </div>
+		</div>
+	
 	    <input type="hidden" name="smsto" value="<?php echo $smsAll; ?>">
 
 

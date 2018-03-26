@@ -1,11 +1,14 @@
 
 <div style="overflow:hidden;" id="sendSelectedEmail" class="innerpageallwebbox">
 	<div class="title objective">
+
 		<h2 style="float:left;"><?php echo __("Objective's", 'allwebbox'); ?></h2>
 		<?php 
-			$queryst = http_build_query(array('send_mails' => $_GET['send_mails']));	
+			$queryst =(isset($_GET['send_mails']))?http_build_query(array('send_mails' => $_GET['send_mails'])):'';	
 		?>
-		<a style="float:right;" href="<?php echo admin_url( $path = '/admin.php?page=email_markeging_campaigns&' . $queryst, $scheme = 'admin' ); ?>" class="button button-primary button-large"><< Go Back</a>
+		<a style="float:right;" href="<?php 
+		echo (isset($_GET['send_mails']))?admin_url( $path = '/admin.php?page=my-menu&campains=1&' . $queryst, $scheme = 'admin' ):admin_url( $path = '/admin.php?page=my-menu&campains=1', $scheme = 'admin' );
+		?>" class="button button-primary button-large"><?php echo __("Campaign's", "allwebbox"); ?></a>
 	</div>
     		<?php foreach($allObjects as $sObj): 
 		        	$subObjects = $wpdb->get_results('SELECT * FROM '.$tbl_subobjective.' WHERE oids='.$sObj->id.'', OBJECT);
@@ -20,6 +23,11 @@
 			        </div>
 
 	     			<div class="tempNewInner tmhidden">
+	     			  
+	     			  <div class="ob_desc mt20">
+	     			  		<textarea class="form-control" style="width:100%;" rows="4" name="ob_desc"><?php echo $sObj->ob_desc;  ?></textarea>
+	     			  </div>
+
 			          <div data-id="<?php echo $sObj->id; ?>" class="objectDelete">
 			              <span alt="f158" class="dashicons dashicons-no"></span>
 			          </div>
@@ -34,7 +42,6 @@
 	 					<div class="subCamptitle title">
 	 						<div class="titleInner">
 	 							<h4><span alt="f345" class="dashicons dashicons-arrow-right-alt2"></span>&nbsp;<?php echo $eachS->sub_obj; ?></h4>
-	 							
 	 						</div>
 	 					</div>
 	 					<div class="wrap hidden email_campains bgff p20">
@@ -42,8 +49,11 @@
 						
 						<!-- Sub-Objective Name -->
 						<input type="text" name="sub_obj" class="form-control" value="<?php echo $eachS->sub_obj; ?>" placeholder="Sub-Objective..." />
-
 						<!-- // End Sub-Campaign Name -->
+
+						<!-- Start Sub Obj Desc -->
+						<div class="subObjDesc"><textarea class="form-control" style="width:100%;" rows="4" name="sub_desc"><?php echo $eachS->sub_desc;  ?></textarea></div>
+						<!-- End Sub Obj Desc -->
 
 						<br>
 						<input type="submit" name="scampain_submit" value="Submit" class="button button-primary" />

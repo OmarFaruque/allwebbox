@@ -6,24 +6,6 @@
 
 */
  
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /// End Test 
 
@@ -360,82 +342,10 @@ if(isset($_GET['sflr_delete']) && $_GET['sflr_delete'] == true){
       </div>
     </div>
   </div>
-
   <!-- End All Brand -->
-
-
-
-
-
-
-
-    <!-- Saved Filter -->
+  <!-- Saved Filter -->
   <form action="" method="post" enctype="application/x-www-form-urlencoded" class="form-horizontal" role="form">
 
-  <div class="sectionAllow crm">
-    <div class="form-group">
-      <div class="col-md-12">
-        <h3>
-        Saved Filter
-        <a id="savedFilter" class="visiableSection" href="javascript:void(0)"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
-        </h3>
-      </div>
-    </div>
-    <div class="form-group allwebContentBdy" id="savedFilterBody">
-      <div class="col-md-12">
-        <div class="info filter"><span>Click on the text body for view saved filter.</span></div>
-        <div class="fix-padding">
-            <?php 
-              if($getFilter && count($getFilter) > 0): 
-                foreach($getFilter as $sfltr):
-            ?>
-            <p>
-              <a href="<?php echo admin_url( $path = '/admin.php?page=crm&sflr=' .$sfltr->id , $scheme = 'admin' ) ?>"><span class="leftText"><?php echo $sfltr->filter_name; ?></span></a>
-              <i class="fa fa-caret-down" aria-hidden="true"></i></p>
-            <div class="filtrDescription hidden">
-              <div class="disInner"><?php echo $sfltr->f_description; ?></div>
-              <div class="deleteF float-right">
-                <a href="<?php echo admin_url( $path = '/admin.php?page=crm&sflr_id=' . $sfltr->id . '&sflr_delete=' . true, $scheme = 'admin' ) ?>">Delete</a>
-              </div>
-            </div>
-            <?php 
-                endforeach;
-              endif; 
-            ?>
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- End Saved Filter -->
-
-
-
-
-
-  <div class="sectionAllow crm">
-    <div class="form-group">
-      <div class="col-md-12">
-        <div id="filInsertMsg"></div>
-        <label for="crmQry">Do you like to use this Filter in future?</label>&nbsp;&nbsp;
-        <label><input type="checkbox" <?php echo (isset($_POST['crmQry']))?'checked':''; ?> value="1" name="crmQry" id="crmQry" class="checkbox"/> Yes</label>
-      </div>
-    </div>
-    <div id="filterSectionQry" class="<?php echo (!isset($_POST['crmQry']))?'hidden':'';?> mt20">
-
-      <div class="form-group">
-        <label for="filter_name">Filter Name</label>
-        <input type="text" name="filter_name" id="filter_name" value="<?php echo (isset($_POST['filter_name']))?$_POST['filter_name']:''; ?>" class="form-control" />
-      </div>
-
-      <div class="form-group">
-        <label for="f_description">Filter Description</label>
-        <textarea name="f_description" id="f_description" class="form-control"><?php echo (isset($_POST['filter_name']))?$_POST['f_description']:''; ?></textarea>
-      </div>
-    </div>
-
-  </div>
 
 
 
@@ -680,6 +590,70 @@ if(isset($_GET['sflr_delete']) && $_GET['sflr_delete'] == true){
     </div>
   </div>
   <!-- End Section -->
+
+
+    <div class="sectionAllow crm">
+    <div class="form-group">
+      <div class="col-md-12">
+        <h3>
+        <?php echo __('Saved Filter', 'allwebbox'); ?>
+        <a id="savedFilter" class="visiableSection" href="javascript:void(0)"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
+        </h3>
+      </div>
+    </div>
+    <div class="form-group allwebContentBdy" id="savedFilterBody">
+      <div class="col-md-12">
+        <div class="info filter"><span>Click on the text body for view saved filter.</span></div>
+        <div class="fix-padding">
+            <?php 
+              if($getFilter && count($getFilter) > 0): 
+                foreach($getFilter as $sfltr):
+            ?>
+            <p>
+              <a href="<?php echo admin_url( $path = '/admin.php?page=crm&sflr=' .$sfltr->id , $scheme = 'admin' ) ?>"><span class="leftText"><?php echo $sfltr->filter_name; ?></span></a>
+              <i class="fa fa-caret-down" aria-hidden="true"></i></p>
+            <div class="filtrDescription hidden">
+              <div class="disInner"><?php echo $sfltr->f_description; ?></div>
+              <div class="deleteF float-right">
+                <a href="<?php echo admin_url( $path = '/admin.php?page=crm&sflr_id=' . $sfltr->id . '&sflr_delete=' . true, $scheme = 'admin' ) ?>">Delete</a>
+              </div>
+            </div>
+            <?php 
+                endforeach;
+              endif; 
+            ?>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Saved Filter -->
+
+
+  <div class="sectionAllow crm">
+    <div class="form-group">
+      <div class="col-md-12">
+        <div id="filInsertMsg"></div>
+        <label for="crmQry">Do you like to use this Filter in future?</label>&nbsp;&nbsp;
+        <label><input type="checkbox" <?php echo (isset($_POST['crmQry']))?'checked':''; ?> value="1" name="crmQry" id="crmQry" class="checkbox"/> Yes</label>
+      </div>
+    </div>
+    <div id="filterSectionQry" class="<?php echo (!isset($_POST['crmQry']))?'hidden':'';?> mt20">
+
+      <div class="form-group">
+        <label for="filter_name">Filter Name</label>
+        <input type="text" name="filter_name" id="filter_name" value="<?php echo (isset($_POST['filter_name']))?$_POST['filter_name']:''; ?>" class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label for="f_description">Filter Description</label>
+        <textarea name="f_description" id="f_description" class="form-control"><?php echo (isset($_POST['filter_name']))?$_POST['f_description']:''; ?></textarea>
+      </div>
+    </div>
+
+  </div>
+
 
   <button type="submit" name="form_submit" class="btn blue pull-right">Search</button>
   </form>
