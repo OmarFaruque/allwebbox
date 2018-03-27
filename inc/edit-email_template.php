@@ -38,9 +38,18 @@ $sTemp = $wpdb->get_row('SELECT * FROM '.$template_table.' WHERE `id`='.$_GET['i
           <input type="text" required name="name" id="template_name" value="<?php echo $sTemp->name; ?>" class="form-control p5">
         </div>
         <br>
-    
+        <div class="userParemeters" id="campaignPrameter">
+            <label><?php echo __('User Parameters', 'allwebbox'); ?> <span alt="f139" class="dashicons dashicons-arrow-right"></span></label>
+            <ul class="usParementslist hidden">
+              <?php 
+              $columns = $wpdb->get_col("DESC " . $entryTbl, 0);
+              foreach($columns as $sCl): ?>
+                <li data-param="<?php echo $sCl; ?>">[<?php echo $sCl; ?>]</li>
+              <?php endforeach; ?>
+            </ul>
+        </div>
         <div class="newTemplate">
-          <textarea style="width:100%; min-height:250px;" name="tmplate" class="form-control"><?php echo $sTemp->tmplate; ?></textarea>
+          <textarea style="width:100%; min-height:250px;" name="tmplate" class="form-control tinymce"><?php echo $sTemp->tmplate; ?></textarea>
         </div>
         <input type="hidden" name="edit_id" value="<?php echo $_GET['id']; ?>">
         <button type="submit" class="button button-primary">Submit</button>
