@@ -5,15 +5,16 @@
 
 
 global $wpdb;
-$template_table = $wpdb->prefix . 'template_table';
+$template_table   = $wpdb->prefix . 'template_table';
+$entryTbl         = $wpdb->prefix . 'awe_entry';
 ?>
 <div class="wrap email_templates_single bgff p20">
   
 <?php if(!isset($_GET['tm-action'])): ?>
   <div class="emalitoptabs">
     <ul>
-      <li><a class="active" href="#newTemplkate" title="New Template">New Template</a></li>
-      <li><a href="#allJourney" title="All Journey">All Template</a></li>
+      <li><a class="active" href="#newTemplkate" title="New Template"><?php echo __('New Template', 'allwebbox'); ?></a></li>
+      <li><a href="#allJourney" title="All Journey"><?php echo __('All Template', 'allwebbox'); ?></a></li>
     </ul>
   </div>
 
@@ -78,19 +79,29 @@ if(isset($_POST['name'])){
 <!-- Start New Journey -->
 <div id="newTemplkate" class="active section">
   <div class="innermail">
-    <h2>Add New Template</h2>
+    <h2><?php echo __('Add New Template', 'allwebbox'); ?></h2>
     <form action="" method="post" accept-charset="utf-8">
         <div class="form-group">
-          <label for="template_name">Template Name</label>
-          <input type="text" required name="name" id="template_name" value="<?php echo ($_POST['name'])?$_POST['name']:''; ?>" class="form-control p5">
+          <label for="template_name"><?php echo __('Template Name', 'allwebbox'); ?></label>
+          <input type="text" required name="name" id="template_name" value="<?php echo (isset($_POST['name']))?$_POST['name']:''; ?>" class="form-control p5">
         </div>
         <br>
+        <div class="userParemeters" id="campaignPrameter">
+            <label><?php echo __('User Parameters', 'allwebbox'); ?> <span alt="f139" class="dashicons dashicons-arrow-right"></span></label>
+            <ul class="usParementslist hidden">
+              <?php 
+              $columns = $wpdb->get_col("DESC " . $entryTbl, 0);
+              foreach($columns as $sCl): ?>
+                <li data-param="<?php echo $sCl; ?>">[<?php echo $sCl; ?>]</li>
+              <?php endforeach; ?>
+            </ul>
+        </div>
         <div class="newTemplate">
-        	<label for="tmplate">Content</label>
-          	<textarea style="width:100%; min-height:250px;" id="tmplate" min-height:120px;" name="tmplate" class="form-control"><?php echo ($_POST['tmplate'])?stripslashes($_POST['tmplate']):''; ?></textarea>
+        	<label for="tmplate"><?php echo __('Content', 'allwebbox'); ?></label>
+          	<textarea style="width:100%; min-height:250px;" id="tmplate" min-height:120px;" name="tmplate" class="form-control tinymce"><?php echo (isset($_POST['tmplate']))?stripslashes($_POST['tmplate']):''; ?></textarea>
         </div>
 
-        <button type="submit" class="button button-primary">Submit</button>
+        <button type="submit" class="button button-primary"><?php echo __('Submit', 'allwebbox'); ?></button>
     </form>
   </div>
 </div>

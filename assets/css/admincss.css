@@ -49,7 +49,7 @@ a:hover.tooltips span {
 
 .fix-padding b {
   float: left;
-  width: 225px;
+  width: 265px;
   min-width: 171px;
 }
 
@@ -624,7 +624,7 @@ div#newjourney .half.right {
     margin-right: 0;
     float: right;
 }
-.newTemplate .three-half {
+.innermail .newTemplate .three-half {
     float: left;
     width: 340px;
     margin-right: 15px;
@@ -808,17 +808,18 @@ select#alljourney.error {
   overflow: hidden;
   max-height:0px !important; 
 }
+div#newjourney textarea,
 div#newjourney input,
 div#newjourney select,
 div#editJourney input {
     background: #efefef;
 }
-.innermail > form > div.three-half {
+.innermail > form div.three-half {
     width: 355px;
     float: left;
     margin-right: 15px;
 }
-.innermail > form > div.three-half.right{margin-right: 0px;}
+.innermail > form div.three-half.right{margin-right: 0px;}
 div#searchReasult_wrapper input.hidden {
     display: none;
 }
@@ -1023,4 +1024,11 @@ a.button.button-primary.button-bigger {
     float: left;
     width: 100%;
     margin-bottom: 50px;
+}
+.newTemplate span.noteS {
+    display: block;
+    margin-bottom: 10px;
+}
+.newTemplate div#campaignPrameter {
+    margin-bottom: 0;
 }

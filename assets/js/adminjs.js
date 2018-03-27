@@ -350,8 +350,16 @@ jQuery(document).ready(function($){
 	 * add new email template
 	 */
 	 $(document.body).on('click', 'div#addnewTemplate span', function(){
-		var usrPrameters = jQuery.parseJSON(entry_clmn);
-		var prem = '';
+		var usrPrameters 	= jQuery.parseJSON(entry_clmn);
+		var alletemp 		= jQuery.parseJSON(emalTems);
+		var prem 			= '';
+		var templates 		= '';
+
+		$.each(alletemp, function(k, v) {
+			$vrSelected = (sltTemp == k)?'selected':'';
+		    templates += '<option '+$vrSelected+' value="'+k+'">'+v+'</option>';
+		});
+		
 		for(s of usrPrameters){
 				prem +='<li data-param="'+s+'">['+s+']</li>';
 		}
@@ -361,22 +369,22 @@ jQuery(document).ready(function($){
 	 					+'<div class="tempDelete">'
               			+'<span alt="f158" class="dashicons dashicons-no"></span>'
           				+'</div>'
+          				+'<div class="form-group">'
+          				+'<span class="noteS"><small><i>Note: Use any one from Email Date & Email time</i></small></span>'
           				+'<div class="three-half left">'
-            			+'<div class="form-group">'
               			+'<label for="journey_date">Email sent date <small><i>(Date)</i></small></label>'
               			+'<input type="text" style="padding:3.5px;" class="datepicker form-control p5" name="j_date[]" value="">'
-            			+'</div>'
           				+'</div>'
 
           				+'<div class="three-half left middle">'
-            			+'<div class="form-group">'
+            			
               			+'<label for="journey_time">Email sent after <small><i>(time)</i></small></label>'
               			+'<input type="number" id="journey_time" name="j_time[]" value="" class="form-control p5">'
-            			+'</div>'
+            			
           				+'</div>'
 
           				+'<div class="three-half right">'
-            			+'<div class="form-group">'
+            			
               			+'<label for="time_unit">Each</label><br>'
               			+'<label><input type="radio" value="month" name="time_unit['+lengh+']" />Month</label>&nbsp;&nbsp;'
               			+'<label><input type="radio" value="week" name="time_unit['+lengh+']" />Week</label>&nbsp;&nbsp;'
@@ -392,12 +400,28 @@ jQuery(document).ready(function($){
             			+'</div>'
           				+'</div>'
 
-          				+'<div class="userParemeters">'
-            			+'<label>User Parameters </label>'
-            			+'<ul class="usParementslist">'+prem+'</ul>'
+          				+' <div class="userParemeters" id="campaignPrameter">'
+            			+'<label>User Parameters <span alt="f139" class="dashicons dashicons-arrow-right"></span></label>'
+            			+'<ul class="usParementslist hidden">'+prem+'</ul>'
           				+'</div>'
-      					+'<textarea style="width:100%; min-height:120px;" name="j_emails[]" class="form-control tinymce">Hi [lastname],&nbsp;<div><br></div><div>Regards,</div></textarea>'
 
+
+          				+'<div class="form-group">'
+          				+'<div class="pull-right">'
+						+'<div class="inlinelabel">'
+						+'<label for="loadExistingTemplate"></label>'
+						+'<select id="loadExistingTemplate" name="loadTemplate">'
+						+'<option value="">Load Template...</option>'
+						+ templates
+						+'</select>'
+						+'</div>'
+						+'</div>'
+
+
+
+
+      					+'<div class="visualTextArea"><textarea style="width:100%; min-height:120px;" name="j_emails[]" class="form-control tinymce">Hi [lastname],&nbsp;<div><br></div><div>Regards,</div></textarea></div>'
+      					+'</div>' // End form-group for textarea
 
     					+'</div>';
     	var appendT = $($newTemplate).insertBefore($(this).closest('#addnewTemplate'));
@@ -878,9 +902,9 @@ jQuery(document).ready(function($){
 			                'action'	: 'loadTemplateFunction',
 			                'val'		: val
 			            },success:function(data){
-			            			console.log(data);
 			            			$('.awbox-spinner').hide();
-			            			thisI.closest('.form-group').find('.visualTextArea').find('textarea').val(data);
+			            			thisI.closest('.form-group').find('.visualTextArea').find('textarea.tinymce').val(data);
+			            			thisI.closest('.form-group').find('.visualTextArea').find('iframe').contents().find('body').html(data);
 			            }
 
     			}); // Ajax

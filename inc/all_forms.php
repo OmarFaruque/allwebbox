@@ -82,27 +82,27 @@ echo "<h2>All Forms</h2>";
 
 if(isset($_GET['fm'])) {
 ?>
-<center><h3 style='color:green;'>Your Form has been created Successfully </h3></center>
+<center><h3 style='color:green;'><?php echo __('Your Form has been created Successfully', 'allwebbox'); ?> </h3></center>
 <?php } ?>
 
 
 <table id="formList" class="display" cellspacing="0" width="100%">
         <thead>
             <tr>
-                <th>Form Name</th>
-                <th>Short Code </th>
-                <th>Total Enteries</th>
-                <th>Form Created Date</th>
-                <th>Action</th>
+                <th><?php echo __('Form Name', 'allwebbox'); ?></th>
+                <th><?php echo __('Short Code', 'allwebbox'); ?> </th>
+                <th><?php echo __('Total Enteries', 'allwebbox'); ?></th>
+                <th><?php echo __('Form Created Date', 'allwebbox'); ?></th>
+                <th><?php echo __('Action', 'allwebbox'); ?></th>
             </tr>
         </thead>
         <tfoot>
             <tr>
-                <th>Form Name</th>
-                <th>Short Code </th>
-                <th>Total Enteries</th>
-                <th>Form Created Date</th>
-                <th>Action</th>
+                <th><?php echo __('Form Name', 'allwebbox'); ?></th>
+                <th><?php echo __('Short Code', 'allwebbox'); ?> </th>
+                <th><?php echo __('Total Enteries', 'allwebbox'); ?></th>
+                <th><?php echo __('Form Created Date', 'allwebbox'); ?></th>
+                <th><?php echo __('Action', 'allwebbox'); ?></th>
             </tr>
         </tfoot>
         <tbody>
@@ -125,8 +125,5 @@ if(isset($_GET['fm'])) {
                     <a href="#delete" class="deleteMainForm" data-id="<?php echo $id; ?>" title="Delete">Delete</a>
                 </td>
 			 </tr> <?php } ?> 
-              
- 
-
         </tbody>
     </table>

@@ -230,11 +230,10 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 		<div class="caption">
 			<span class="caption-subject font-dark bold uppercase">
 				<?php if(isset($_GET['id'])): ?>
-					Edit Form: <?php echo $editfQuery->form_name; ?>
-				<?php else: ?>
-					Creating a New Form 
-				<?php endif; ?>
-
+					<?php echo __('Edit Form', 'allwebbox'); ?>: <?php echo $editfQuery->form_name; ?>
+				<?php else:  
+					echo __('Creating a New Form', 'allwebbox' );
+				endif; ?>
 			</span> 
 		</div>
 	</div> 
@@ -252,7 +251,7 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 <div class="form-group" id="name_form">
 	<div class="col-md-12">
 		<div class="fix-padding">
-			<h4><b>Form Name</b>	<a class="tooltips" href="#"><i class="fa fa-question-circle-o" aria-hidden="true"></i><span>Give a Name  to your form  </span></a></h4>
+			<h4><b><?php echo __('Form Name', 'allwebbox'); ?></b>	<a class="tooltips" href="#"><i class="fa fa-question-circle-o" aria-hidden="true"></i><span><?php echo __('Give a Name  to your form', 'allwebbox'); ?>  </span></a></h4>
 			<input type="text" class="form-control" value="<?php echo (isset($_GET['id']))?$editfQuery->form_name:''; ?>" name="name_form" autofocus="true" maxlength="255" placeholder="Form Name" required="true">
 			<input type="hidden" name="id_cms" value="" id="id_cms">
 		</div>
@@ -263,7 +262,7 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 	<div class="form-group">
 		<div class="col-md-12">
 			<h3>
-			1. Basic Questions.
+			1. <?php echo __('Basic Questions', 'allwebbox'); ?>.
 			<a id="visiableBasicQuestion" class="visiableSection" href="javascript:void(0)"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
 			</h3>
 		</div>
@@ -272,8 +271,8 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 	<div class="col-md-12">
 	<div class="fix-padding">
 		<h4>
-			<b>Identification Questions</b>
-			<a class="tooltips" href="#"><i class="fa fa-question-circle-o" aria-hidden="true"></i> <span>Basic Information  </span></a>
+			<b><?php echo __('Identification Questions', 'allwebbox'); ?></b>
+			<a class="tooltips" href="#"><i class="fa fa-question-circle-o" aria-hidden="true"></i> <span><?php echo __('Basic Information', 'allwebbox'); ?>  </span></a>
 		</h4>
 	</div>
 	<?php 
@@ -359,13 +358,8 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 				<!-- Editable Field -->
 				<div class="editablefield">
 				<div class="form-group">
-					
 
-
-					
-
-				<?php 
-				
+				<?php 				
 				echo '<div class="qoptionsList">Options: <br/>';
 				if($brands && count($brands) > 0){
 					foreach($brands as $sBrand):
@@ -375,12 +369,9 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 					echo '<input type="text" name="brand_options[]" value=""/>';			
 				}
 				
-					
 				echo '</div>
 					<a class="addnewOption brand" href="#"><span alt="f502" class="dashicons dashicons-plus-alt"></span></a>';
-
 				?>
-				
 				</div>
 			</div>
 			<?php endif; ?>
@@ -394,8 +385,8 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 	<div class="half col-md-6">
 	<div class="fix-padding" >
 	<h4>
-		<b>Contact Information</b>
-		<a class="tooltips" href="#"><i class="fa fa-question-circle-o" aria-hidden="true"></i> <span>Contact Information  </span></a>
+		<b><?php echo __('Contact Information', 'allwebbox'); ?></b>
+		<a class="tooltips" href="#"><i class="fa fa-question-circle-o" aria-hidden="true"></i> <span><?php echo __('Contact Information', 'allwebbox'); ?>  </span></a>
 	</h4>
 	</div>
 	<div class="row">
@@ -422,18 +413,18 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 		
 		<div class="fix-padding" >
 			<h4>
-				<b>Terms and conditions</b>
-				<a class="tooltips" href="#"><i class="fa fa-question-circle-o" aria-hidden="true"></i> <span>Terms and conditions </span></a>
+				<b><?php echo __('Terms and conditions', 'allwebbox'); ?></b>
+				<a class="tooltips" href="#"><i class="fa fa-question-circle-o" aria-hidden="true"></i> <span><?php echo __('Terms and conditions', 'allwebbox'); ?> </span></a>
 			</h4>
 		</div>
 		<div class="col-md-3">
 			<label class="mt-checkbox mt-checkbox-outline">
-				<input type="checkbox" <?php echo (isset($termsnC->active) && $termsnC->active == 1 )?'checked':''; ?>    name="termsncondition[active]" value="1"> Active Terms & Condition
+				<input type="checkbox" <?php echo (isset($termsnC->active) && $termsnC->active == 1 )?'checked':''; ?>    name="termsncondition[active]" value="1"> <?php echo __('Active Terms & Condition', 'allwebbox'); ?>
 				<span></span>
 			</label>
 		</div>
 		<div class="col-md-3">
-			<label for="termsnconditiontext">Terms & Condition</label>
+			<label for="termsnconditiontext"><?php echo __('Terms & Condition', 'allwebbox'); ?></label>
 			<input style="width:100%;" type="text" name="termsncondition[text]" id="termsnconditiontext" class="form-control" value="<?php echo $termsnC->text; ?>" />
 		</div>
 
@@ -441,7 +432,7 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 
 			<label for="termsnconditionlink">T&C Page</label><br/>
 			<select id="termsnconditionlink" name="termsncondition[link]" class="form-control">
-				<option value="">Select Terms & Condition Page</option>
+				<option value=""><?php echo __('Select Terms & Condition Page', 'allwebbox'); ?></option>
 				<?php 
 					$page_ids = get_all_page_ids(); 
 					foreach($page_ids as $spage){
@@ -456,8 +447,8 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 
 		<div class="fix-padding" >
 			<h4>
-				<b>Profiling questions</b>
-				<a class="tooltips" href="#"><i class="fa fa-question-circle-o" aria-hidden="true"></i> <span>Profile Data </span></a>
+				<b><?php echo __('Profiling questions', 'allwebbox'); ?></b>
+				<a class="tooltips" href="#"><i class="fa fa-question-circle-o" aria-hidden="true"></i> <span><?php echo __('Profile Data', 'allwebbox'); ?> </span></a>
 			</h4>
 		</div>
 
@@ -488,7 +479,7 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 		<div class="col-md-12">
 			<div class="fix-padding">
 					<h3>
-						2. Custom Questions.
+						2. <?php echo __('Custom Questions', 'allwebbox'); ?>.
 						<a id="visiableBasicQuestion2" class="visiableSection" href="javascript:void(0)"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
 					</h3>
 			</div>
@@ -522,10 +513,10 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 			</div>
 			<div class="editablefield">
 				<div class="form-group" data-entry_row_id="<?php echo $selectType->row_id; ?>">
-					<label for="editAnswerType<?php echo $count;  ?>">Answer Type:</label>
+					<label for="editAnswerType<?php echo $count;  ?>"><?php echo __('Answer Type', 'allwebbox'); ?>:</label>
 					
 					<select name="editAnswerType" id="editAnswerType<?php echo $count;  ?>">
-					<option>Select Your Answer Format </option>
+					<option><?php echo __('Select Your Answer Format', 'allwebbox'); ?> </option>
 					<?php 
 						for($t=0; count($ansTypes) > $t; $t++){ 
 						$selectedOp = ($t+1 == $selectType->answer_type)?'selected':'';
@@ -534,7 +525,7 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
                     <?php } ?>
 					</select>
 
-					&nbsp;&nbsp;<label>Required: <input <?php echo ($selectType->required == 1)?'checked':''; ?> type="checkbox" name="updateRequred" value="1"/></label>
+					&nbsp;&nbsp;<label><?php echo __('Required', 'allwebbox'); ?>: <input <?php echo ($selectType->required == 1)?'checked':''; ?> type="checkbox" name="updateRequred" value="1"/></label>
 
 				<?php 
 				if($selectType->answer_type == 3 || $selectType->answer_type == 4 ):
@@ -553,7 +544,7 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 
 				endif;
 				?>
-				<button type="submit" data-entry_id="" class="updateOptions button button-primary">Update</button>
+				<button type="submit" data-entry_id="" class="updateOptions button button-primary"><?php echo __('Update', 'allwebbox'); ?></button>
 				<div class="ajaxSuccess"></div>
 				</div>
 			</div>
@@ -595,7 +586,7 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 		<div class="col-md-12">
 		<div class="fix-padding">
 			<h3>
-			3. Create Custom Questions.
+			3. <?php echo __('Create Custom Questions', 'allwebbox'); ?>.
 			<a id="visiableBasicQuestion3" class="visiableSection" href="javascript:void(0)"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
 			</h3>
 		</div>
@@ -606,11 +597,11 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 	<div class="form-group allwebContentBdy" id="build_questions">
 		<div class="col-md-12">
 			<p>
-			Now you must decide how many additional questions you want to create. Try not to do (in total) more than 6 or 7 questions because your clients will feel unmotivated if they are many. The more questions you ask, the fewer customers will leave your information. <br>
-			<h4>First Select the Number of Additional Questions You Want to Ask.</h4>
+			<?php echo __('Now you must decide how many additional questions you want to create. Try not to do (in total) more than 6 or 7 questions because your clients will feel unmotivated if they are many. The more questions you ask, the fewer customers will leave your information.', 'allwebbox'); ?> <br>
+			<h4><?php echo __('First Select the Number of Additional Questions You Want to Ask', 'allwebbox'); ?>.</h4>
 			</p>
 			<select class="form-control" id="num_questions" name="num_questions" onChange="adds(this.value)">
-			<option value="-1">Select the Number of Questions to Create</option>
+			<option value="-1"><?php echo __('Select the Number of Questions to Create', 'allwebbox'); ?></option>
 			<option value="1">1</option>
 			<option value="2">2</option>
 			<option value="3">3</option>
@@ -637,7 +628,7 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 		<div class="col-md-12">
 		<div class="fix-padding">
 			<h3>
-			4. Form Style.
+			4. <?php echo __('Form Style', 'allwebbox'); ?>.
 			<a id="visiableBasicQuestion4" class="visiableSection" href="javascript:void(0)"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
 			</h3>
 		</div>
@@ -648,11 +639,11 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 	<div class="form-group allwebContentBdy" id="formStyle">
 		<div class="col-md-12">
 			<p>
-				Set your form style and view. <br>
+				<?php echo __('Set your form style and view', 'allwebbox'); ?>. <br>
 			</p>
 			
 			<div class="form-group">
-				<label for="boxpadding">Form Padding</label>
+				<label for="boxpadding"><?php echo __('Form Padding', 'allwebbox'); ?></label>
 				<input value="<?php echo (count($styleQrs) > 0)?$styleQrs->boxpadding:'';  ?>" id="boxpadding" class=""  type="number" name="style[boxpadding]"> px
 			</div>
 			<!--<div class="form-group">
@@ -664,16 +655,16 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 				<input value="<?php echo (count($styleQrs) > 0)?$styleQrs->headingcolor:'';  ?>" id="headingcolor" class="colorpicker"  type="text" name="style[headingcolor]">
 			</div>-->
 			<div class="form-group">
-				<label for="textcolor">Text Color</label>
+				<label for="textcolor"><?php echo __('Text Color', 'allwebbox'); ?></label>
 				<input value="<?php echo (count($styleQrs) > 0)?$styleQrs->textcolor:'';  ?>" id="textcolor" class="colorpicker"  type="text" name="style[textcolor]">
 			</div>
 
 			<div class="form-group">
-				<label for="backgroundc">Background Color</label>
+				<label for="backgroundc"><?php echo __('Background Color', 'allwebbox'); ?></label>
 				<input value="<?php echo (count($styleQrs) > 0)?$styleQrs->backgroundc:'';  ?>" id="backgroundc" class="colorpicker"  type="text" name="style[backgroundc]">
 			</div>
 			<div class="form-group">
-				<label for="backgroundImg">Background Image</label>
+				<label for="backgroundImg"><?php echo __('Background Image', 'allwebbox'); ?></label>
 				<input id="backgroundImg" type="hidden" value="<?php echo (count($styleQrs) > 0)?$styleQrs->backgroundimg:'';  ?>" name="style[backgroundimg]">
 				<div class="imgPreviewbImage">
 					<?php if(count($styleQrs) > 0 && $styleQrs->backgroundimg !=''): ?>
@@ -691,14 +682,14 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 				?>
 			</div>
 			<div class="form-group">
-				<label for="bgImageRepeat">Background Image Repeat</label>
+				<label for="bgImageRepeat"><?php echo __('Background Image Repeat', 'allwebbox'); ?></label>
 				<select name="style[bgimagerepeat]" id="bgImageRepeat">
-					<option value="no">No</option>
-					<option <?php echo (count($styleQrs) > 0 && $styleQrs->bgimagerepeat == 'yes')?'selected':''; ?> value="yes">Yes</option>
+					<option value="no"><?php echo __('No', 'allwebbox'); ?></option>
+					<option <?php echo (count($styleQrs) > 0 && $styleQrs->bgimagerepeat == 'yes')?'selected':''; ?> value="yes"><?php echo __('Yes', 'allwebbox'); ?></option>
 				</select>
 			</div>
 			<div class="form-group">
-				<label for="bgImageAttachment">Background Attachment</label>
+				<label for="bgImageAttachment"><?php echo __('Background Attachment', 'allwebbox'); ?></label>
 				<select name="style[bgimageattachment]" id="bgImageAttachment">
 					<?php 
 					$attArray = array(
@@ -716,9 +707,9 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 				</select>
 			</div>
 			<div class="form-group">
-				<label for="bgsize">Background Size</label>
+				<label for="bgsize"><?php echo __('Background Size', 'allwebbox'); ?></label>
 				<select name="style[bgsize]" id="bgsize">
-					<option value="">Select Background Position</option>
+					<option value=""><?php echo __('Select Background Position', 'allwebbox'); ?></option>
 					<?php 
 					$bgsizes = array('auto', 'cover', 'contain', 'initial', 'inherit');
 					foreach($bgsizes as $sps){
@@ -729,31 +720,31 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 				</select>
 			</div>
 			<div class="form-group">
-				<label for="buttonCollor">Button Color</label>
+				<label for="buttonCollor"><?php echo __('Button Color', 'allwebbox'); ?></label>
 				<input value="<?php echo (count($styleQrs) > 0)?$styleQrs->buttoncollor:'';  ?>" id="buttonCollor" class="colorpicker"  type="text" name="style[buttoncollor]">
 			</div>
 
 			<div class="form-group">
-				<label for="buttontext">Button Text</label>
+				<label for="buttontext"><?php echo __('Button Text', 'allwebbox'); ?></label>
 				<input value="<?php echo (count($styleQrs) > 0 && isset($styleQrs->buttontext))?$styleQrs->buttontext:'';  ?>" id="buttontext"  type="text" name="style[buttontext]">
 			</div>
 			<div class="form-group">
-				<label for="buttontext">Reset Button Text</label>
+				<label for="buttontext"><?php echo __('Reset Button Text', 'allwebbox'); ?></label>
 				<input value="<?php echo (count($styleQrs) > 0 && isset($styleQrs->rstbuttontext))?$styleQrs->rstbuttontext:'';  ?>" id="buttontext"  type="text" name="style[rstbuttontext]">
 			</div>
 			<div class="form-group">
 				<label for="bgoverley">
-				<input value="1" <?php echo (isset($styleQrs->bgoverley) && $styleQrs->bgoverley == 1)?'checked':''; ?> id="bgoverley" type="checkbox" name="style[bgoverley]">&nbsp;Background Overley</label>
+				<input value="1" <?php echo (isset($styleQrs->bgoverley) && $styleQrs->bgoverley == 1)?'checked':''; ?> id="bgoverley" type="checkbox" name="style[bgoverley]">&nbsp;<?php echo __('Background Overley', 'allwebbox'); ?></label>
 			</div>
 
 			<div id="overleySection">
 				<div class="form-group" id="overleycolorID">
-					<label for="overleycolor">Overley Color</label>
+					<label for="overleycolor"><?php echo __('Overley Color', 'allwebbox'); ?></label>
 					<input value="<?php echo (count($styleQrs) > 0)?$styleQrs->overleycolor:'';  ?>" id="overleycolor" class="colorpicker"  type="text" name="style[overleycolor]">
 				</div>
 				<div class="form-group">
-					<label for="ovrltrans">Overley Opacity</label>
-					<input value="<?php echo (count($styleQrs) > 0)?$styleQrs->ovrltrans:'';  ?>" id="overleycolor"  type="number" min=".01" max="1.0" step="0.01" name="style[ovrltrans]">&nbsp;&nbsp;<small>(0.01 to 1.00)</small>
+					<label for="ovrltrans"><?php echo __('Overley Opacity', 'allwebbox'); ?></label>
+					<input value="<?php echo (count($styleQrs) > 0)?$styleQrs->ovrltrans:'';  ?>" id="overleycolor"  type="number" min=".01" max="1.0" step="0.01" name="style[ovrltrans]">&nbsp;&nbsp;<small>(0.01 <?php echo __('to', 'allwebbox'); ?> 1.00)</small>
 				</div>
 
 			</div>
@@ -770,7 +761,7 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 		<div class="col-md-12">
 		<div class="fix-padding">
 			<h3>
-			5. Journey & Content.
+			5. <?php echo __('Automated Campaigns', 'allwebbox'); ?>.
 			<a id="visiableBasicQuestion4" class="visiableSection" href="javascript:void(0)"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
 			</h3>
 		</div>
@@ -781,13 +772,13 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 	<div class="form-group allwebContentBdy" id="formjourneyncontent">
 		<div class="col-md-12">
 			<p>
-				Set Journey for registered user. For create new journey click <a href="<?php echo admin_url( $path = 'admin.php?page=email_marketing', $scheme = 'admin' ); ?>" title="New Journey">here</a>. Premium Content / Page only can see who register usign this form. <br>
+				<?php echo __('Set Journey for registered user. For create new journey click', 'allwebbox'); ?> <a href="<?php echo admin_url( $path = 'admin.php?page=email_marketing', $scheme = 'admin' ); ?>" title="New Journey"><?php echo __('here', 'allwebbox'); ?></a>. <?php echo __('Premium Content / Page only can see who register usign this form', 'allwebbox'); ?>. <br>
 			</p>
 			<div class="form-group">
 				<?php $journeyQs = $wpdb->get_results('SELECT `id`,`j_name` FROM '.$jurneytable.'', OBJECT); ?>
-				<label for="journey">Journey: </label>
+				<label for="journey"><?php echo __('Journey', 'allwebbox'); ?>: </label>
 				<select  name="journey" id="journey" class="form-control">
-					<option>Select Journey</option>
+					<option><?php echo __('Select Journey', 'allwebbox'); ?></option>
 					<?php 
 						foreach($journeyQs as $sj){
 							$sltd = ($sj->id == $journey)?'selected':'';
@@ -798,7 +789,7 @@ if(isset($_GET['id']) && $_GET['id']!= ''){
 			</div>
 			<br>
 			<div class="from-group">
-				<label for="content">Premium Content: </label>
+				<label for="content"><?php echo __('Premium Content', 'allwebbox'); ?>: </label>
 				<?php 
 						/*
 						 * The WordPress Query class.

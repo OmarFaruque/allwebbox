@@ -1,22 +1,23 @@
 <?php
 function Email_marketing(){ 
 global $wpdb;
-$jurneytable = $wpdb->prefix . 'awe_journey';
-$entryTbl   = $wpdb->prefix . 'awe_entry';
+$jurneytable      = $wpdb->prefix . 'awe_journey';
+$entryTbl         = $wpdb->prefix . 'awe_entry';
+$tbl_subobjective = $wpdb->prefix . 'tbl_subobjective'; 
+$template_table   = $wpdb->prefix . 'template_table';
 ?>
 <div class="wrap email_templates bgff p20">
   
 <?php if(!isset($_GET['action'])): ?>
   <div class="emalitoptabs">
     <ul>
-      <li><a class="active" href="#newjourney" title="New Journey">New Journey</a></li>
-      <li><a href="#allJourney" title="All Journey">All Journey</a></li>
+      <li><a class="active" href="#newjourney" title="New Journey"><?php echo __('New Journey', 'allwebbox'); ?></a></li>
+      <li><a href="#allJourney" title="All Journey"><?php echo __('All Journey', 'allwebbox'); ?></a></li>
     </ul>
   </div>
 
 
 <?php
-
 /*$extable = $wpdb->get_row('SELECT `j_emails` FROM '.$jurneytable.' WHERE id=18', OBJECT);
 $jDEcode = json_decode($extable->j_emails);*/
 
@@ -122,9 +123,9 @@ if(isset($_POST['j_time_default'])){
 <div id="newjourney" class="active section">
   <div id="msg">
     <?php if($msg != '' && $msg == 'success'): ?>
-        <div class="success msg"><h5>Journey Succefully Create.</h5></div>
+        <div class="success msg"><h5><?php echo __('Journey Succefully Create', 'allwebbox'); ?>.</h5></div>
     <?php elseif($msg !='' && $msg == 'faild'): ?>
-        <div class="error msg"><h5>Journey Create Failed.</h5></div>
+        <div class="error msg"><h5><?php echo __('Journey Create Failed', 'allwebbox'); ?>.</h5></div>
     <?php endif; ?>
   </div>
   <div class="innermail">
@@ -134,38 +135,55 @@ if(isset($_POST['j_time_default'])){
     ?>
     <form action="" method="post" accept-charset="utf-8">
         <div class="form-group">
-          <label for="journey_name">Journey Name <small><i>&nbsp;(Journey Name use for Email Subject)</i></small></label>
+          <label for="journey_name"><?php echo __('Journey Name', 'allwebbox'); ?> <small><i>&nbsp;(<?php echo __('Journey Name use for Email Subject', 'allwebbox'); ?>)</i></small></label>
           <input type="text" required name="j_name" id="journey_name" value="" class="form-control p5">
         </div>
 
 
 
           <div class="form-group">
-          <label for="journey_description">Description of journey</label>
+          <label for="journey_description"><?php echo __('Description of journey', 'allwebbox'); ?></label>
           <textarea style="width:100%;" name="j_description" id="journey_description"></textarea>
         </div>
         <div class="form-group">
-          <label for="journey_goal">Goal of journey</label>
-          <input type="text" name="j_goal" id="journey_goal" value="" class="form-control"/>
-        </div>
-        <div class="form-group">
-          <label for="nameofSender">Name of Sender</label>
-          <input type="text" name="j_sender" id="nameofSender" value="" class="form-control"/>
-        </div>
-        <div class="form-group">
-          <label for="jReplayEmail">Reply email address</label>
-          <input type="email" name="j_rep_email" id="jReplayEmail" value="" class="form-control"/>
+          <label for="journey_goal"><?php echo __('Sub Objective', 'allwebbox'); ?></label>
+          <select style="width:100%;" name="j_goal" id="journey_goal" class="form-control">
+            <option value=""><?php echo __('Select Sub Objective', 'allwebbox'); ?></option>}
+          <?php 
+            $subObj = $wpdb->get_results('SELECT `sub_obj` FROM '.$tbl_subobjective.' WHERE sub_obj != ""', OBJECT);
+            foreach($subObj as $sob){
+              echo '<option value="'.$sob->sub_obj.'">'.$sob->sub_obj.'</option>';
+            }
+          ?>
+          </select>
         </div>
 
-
+        <div class="form-group">
+            <div class="one half">
+              <label for="j_type"><?php echo __('Select type of communication', 'allwebbox'); ?></label><br>
+              <select style="width:100%;" name="j_type" class="form-control" id="j_type">
+                <option value="email"><?php echo __('Email', 'allwebbox'); ?></option>
+                <option value="sms"><?php echo __('SMS', 'allwebbox'); ?></option>
+                <option value="pushtobrowser"><?php echo __('PUSH to Browser', 'allwebbox'); ?></option>
+              </select>
+            </div>
+            <div class="one half">
+                <label for="nameofSender"><?php echo __('Name of who send', 'allwebbox'); ?></label>
+                <input type="text" name="j_sender" id="nameofSender" value="" class="form-control"/>
+            </div>
+        </div>
+      <div class="form-group" style="overflow:hidden; float:left;">
         <div class="three-half left">
-          <div class="form-group">
-            <label for="journey_time">Email sent after <small><i>(Default)</i></small></label>
-            <input type="number" id="journey_time" name="j_time_default" value="" class="form-control p5">
-          </div>
+            <label for="jReplayEmail"><?php echo __('Response Email', 'allwebbox'); ?></label>
+            <input type="email" name="j_rep_email" id="jReplayEmail" value="" class="form-control"/>
         </div>
         <div class="three-half middle">
-          <div class="form-group">
+          
+            <label for="journey_time"><?php echo __('Email sent after', 'allwebbox'); ?> <small><i>(Default)</i></small></label>
+            <input type="number" id="journey_time" name="j_time_default" value="" class="form-control p5">
+
+        </div>
+        <div class="three-half right">
             <label for="time_unit">Each</label><br>
             <label><input type="radio" value="month" name="time_unit_default" />Month</label>&nbsp;&nbsp;
             <label><input type="radio" value="week" name="time_unit_default" />Week</label>&nbsp;&nbsp;
@@ -173,14 +191,7 @@ if(isset($_POST['j_time_default'])){
             <label><input type="radio" value="hour" name="time_unit_default" />Hour</label>
           </div>
         </div>
-        <div class="three-half right">
-          <div class="form-group">
-            <label for="j_type">Message Type</label><br>
-            <label><input type="radio" value="email" name="j_type" />Email</label>&nbsp;&nbsp;
-            <label><input type="radio" value="pushtobrowser" name="j_type" />PUSH to Browser</label>&nbsp;&nbsp;
-            <label><input type="radio" value="sms" name="j_type" />SMS</label>
-          </div>
-        </div>
+
 
         <br class="clear">
         <hr/>
@@ -189,20 +200,20 @@ if(isset($_POST['j_time_default'])){
           <div class="tempDelete">
               <span alt="f158" class="dashicons dashicons-no"></span>
           </div>
+          <div class="form-group">
+            <span class="noteS"><small><i><?php echo __('Note: Use any one from Email Date & Email time', 'allwebbox'); ?></i></small></span>
           <div class="three-half left">
-            <div class="form-group">
               <label for="journey_date">Email sent date <small><i>(Date)</i></small></label>
               <input type="text" style="padding:3.5px;" class="datepicker form-control p5" name="j_date[]" value="">
-            </div>
           </div>
           <div class="three-half left middle">
-            <div class="form-group">
+           
               <label for="journey_time">Email sent after <small><i>(time)</i></small></label>
               <input type="number" id="journey_time" name="j_time[]" value="" class="form-control p5">
-            </div>
+            
           </div>
           <div class="three-half right">
-            <div class="form-group">
+            
               <label for="time_unit">Each</label><br>
               <label><input type="radio" value="month" name="time_unit[0]" />Month</label>&nbsp;&nbsp;
               <label><input type="radio" value="week" name="time_unit[0]" />Week</label>&nbsp;&nbsp;
@@ -218,15 +229,34 @@ if(isset($_POST['j_time_default'])){
               <input type="text" value="" class="form-control" name="j_subject[]" />
             </div>
           </div>
-          <div class="userParemeters">
-            <label>User Parameters </label>
-            <ul class="usParementslist">
+         <div class="userParemeters" id="campaignPrameter">
+            <label><?php echo __('User Parameters', 'allwebbox'); ?> <span alt="f139" class="dashicons dashicons-arrow-right"></span></label>
+            <ul class="usParementslist hidden">
               <?php foreach($columns as $sCl): ?>
                 <li data-param="<?php echo $sCl; ?>">[<?php echo $sCl; ?>]</li>
               <?php endforeach; ?>
             </ul>
           </div>
-          <textarea style="width:100%; min-height:120px;" name="j_emails[]" class="form-control tinymce">Hi [lastname],&nbsp;<div><br></div><div>Regards,</div></textarea>
+
+          <div class="form-group">
+          <div class="pull-right">
+              <div class="inlinelabel">
+              <label for="loadExistingTemplate"></label>
+              <select id="loadExistingTemplate" name="loadTemplate">
+              <option value=""><?php echo __('Load Template...', 'allwebbox'); ?></option>
+              <?php 
+                $exTemplates  = $wpdb->get_results('SELECT * FROM '.$template_table.'', OBJECT);
+                foreach($exTemplates as $tmplt) echo '<option value="'.$tmplt->id.'">'.$tmplt->name.'</option>';
+              ?>
+
+              </select>
+              </div>
+          </div>
+
+          <div class="visualTextArea">
+            <textarea style="width:100%; min-height:120px;" name="j_emails[]" class="form-control tinymce">Hi [lastname],&nbsp;<div><br></div><div>Regards,</div></textarea>
+          </div>
+          </div>
         </div>
         <div id="addnewTemplate"><span alt="f502" class="dashicons dashicons-plus-alt"></span></div>
 

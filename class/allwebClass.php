@@ -181,7 +181,7 @@ class Allwebbox{
 	  * Send Grid Default API Key
 	  */
 	  private function sendGridDefaultAPISet(){
-	  	$dfltKey = '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';
+	  	$dfltKey = get_site_option( 'sendgrid_api_key', $default = false, $deprecated = true );
 	  	$exKey = get_option( 'sendgrid_api_key', $default = false );
 	  	if(!$exKey){
 	  		update_option( 'sendgrid_api_key', $dfltKey, $autoload = null );
@@ -552,20 +552,20 @@ class Allwebbox{
 	   	add_submenu_page('my-menu', __('CRM', 'allwebbox'), __('CRM', 'allwebbox'), 'manage_options', 'crm', array(&$this,'crm'));
 
 	    add_submenu_page('my-menu', __('Create form', 'allwebbox'), __('Create form', 'allwebbox'), 'manage_options', 'create_new', array(&$this,'clivern_render_plugin_page'));
-		add_submenu_page('my-menu', 'Ver formularios', 'Ver formularios', 'manage_options', 'all_forms', array(&$this,'all_forms'));
+		add_submenu_page('my-menu', __('All Forms', 'allwebbox'), __('All Forms', 'allwebbox'), 'manage_options', 'all_forms', array(&$this,'all_forms'));
 
-	    add_submenu_page('my-menu', 'Campañas automatizadas', 'Campañas automatizadas', 'manage_options', 'email_marketing', array(&$this,'email_marketing'));
-	    add_submenu_page('my-menu', 'All Form Entries', 'Form Entries', 'manage_options', 'all_form_entries', array(&$this,'all_form_entries'));
+	    add_submenu_page('my-menu', __('Journey', 'allwebbox'), __('Journey', 'allwebbox'), 'manage_options', 'email_marketing', array(&$this,'email_marketing'));
+	    add_submenu_page(null, __('Form Entries', 'allwebbox'), __('Form Entries', 'allwebbox'), 'manage_options', 'all_form_entries', array(&$this,'all_form_entries'));
 	    
 
 	    /*Email Template */
-	    add_submenu_page('my-menu', 'Email Template', 'Email Templates', 'manage_options', 'email_templates', array(&$this,'email_templates'));
+	    add_submenu_page('my-menu', __('Templates', 'allwebbox'), __('Templates', 'allwebbox'), 'manage_options', 'email_templates', array(&$this,'email_templates'));
 
 	    /*SMS / Message Template */
 	    //add_submenu_page('my-menu', 'SMS/Message', 'SMS/Message', 'manage_options', 'sms-message', array(&$this,'smsAndMessage'));
 
 	    /* Configuration Page */
-	    add_submenu_page('my-menu', 'Configuration', 'Configuration', 'manage_options', 'config', array(&$this,'configurationSmarMKT'));
+	    add_submenu_page('my-menu', __('Configuration', 'allwebbox'), __('Configuration', 'allwebbox'), 'manage_options', 'config', array(&$this,'configurationSmarMKT'));
 
 
 	   }
@@ -2515,14 +2515,44 @@ class Allwebbox{
 
 	    //make the changes to the text
 	    switch( $untranslated_text ) {
-	        case 'sms & message settings':
-	          $translated_text = __( 'Translated Text Here','allwebbox' );
+	         case 'sms & message settings':
+	          $translated_text = __( 'sms y configuracion de mensajes','allwebbox' );
 	        break;
+
 	        case "All Brand's":
-	          $translated_text = __( 'Translated Text Here','allwebbox' );
+	          $translated_text = __( 'Todas las Marcas','allwebbox' );
 	        break;
-	        case "Saved Filter":
-	          $translated_text = __( 'Translated Text Here','allwebbox' );
+
+  			case "Basic Questions":
+	          $translated_text = __( 'Preguntas Basicas','allwebbox' );
+	        break;
+			
+			case "Custom Questions":
+	          $translated_text = __( 'Preguntas Personalizadas','allwebbox' );
+	        break;
+			
+			case "Saved Filter":
+	          $translated_text = __( 'Filtros Guardados','allwebbox' );
+	        break;
+			
+			case "Do you like to use this Filter in future? ":
+	          $translated_text = __( '¿Te gustaría utilizar este filtro en el futuro?','allwebbox' );
+	        break;
+			
+			case "Not Answered":
+	          $translated_text = __( 'Sin respuesta','allwebbox' );
+	        break;
+			
+			case "Identification Questions":
+	          $translated_text = __( 'Preguntas de Identificación','allwebbox' );
+	        break;
+			
+			case "Contact Information":
+	          $translated_text = __( 'Información de Contacto','allwebbox' );
+	        break;
+			
+			case "Profiling questions":
+	          $translated_text = __( 'Preguntas de Perfil','allwebbox' );
 	        break;
 
 	        //add more items
