@@ -24,12 +24,14 @@ return 'Your Name Here';
 
 ini_set("error_reporting", E_ALL);
 global $wpdb;
-$frmTable     = $wpdb->prefix . 'awe_forms';
-$q_question   = $wpdb->prefix . 'awe_customq'; 
-$entryTable   = $wpdb->prefix . 'awe_entry';
-$optionsTbl   = $wpdb->prefix . 'awe_formqansvalue';
-$svdFltrTbl   = $wpdb->prefix . 'savedflr_tbl';
-$tableJourney = $wpdb->prefix . 'awe_journey';
+$frmTable         = $wpdb->prefix . 'awe_forms';
+$q_question       = $wpdb->prefix . 'awe_customq'; 
+$entryTable       = $wpdb->prefix . 'awe_entry';
+$optionsTbl       = $wpdb->prefix . 'awe_formqansvalue';
+$svdFltrTbl       = $wpdb->prefix . 'savedflr_tbl';
+$tableJourney     = $wpdb->prefix . 'awe_journey';
+$tbl_subobjective = $wpdb->prefix . 'tbl_subobjective'; 
+$tbl_subcampaign  = $wpdb->prefix . 'tbl_subcampaign';  
 
 $getFilter = $wpdb->get_results('SELECT * FROM '.$svdFltrTbl.'', OBJECT);
 
@@ -869,7 +871,7 @@ if(isset($_GET['sflr_delete']) && $_GET['sflr_delete'] == true){
   <div class="row">
     <div class="col-md-12 col-sm-12">
 
-      <div class="portlet light bordered">
+      <div class="portlet light bordered mb50">
         <div id="csvSuccess">
           <?php if(isset($csvMsg)): ?>
              <div class="csvsMesg message">
@@ -963,7 +965,7 @@ if(isset($_GET['sflr_delete']) && $_GET['sflr_delete'] == true){
 <form style="max-width:1150px;" method='GET' action='<?php echo admin_url( $path = '/admin.php?page=crm', $scheme = 'admin' ); ?>'>
 <input type="hidden" name="asqQsn" value="">
 <input type="hidden" name="page" value="crm">
-<input type="submit" name="a_action" class="btn blue pull-right" value="<?php echo __('Start Campaign', 'allwebbox'); ?>" />
+<!--<input type="submit" name="a_action" class="btn blue pull-right" value="<?php echo __('Start Campaign', 'allwebbox'); ?>" />-->
 <input id="askQButton" type="submit" name="a_action" class="btn blue pull-right" value="<?php echo __('Send Email / SMS', 'allwebbox'); ?>" />
 
 <table id="searchReasult" class="display" cellspacing="0" width="100%">
@@ -1039,6 +1041,27 @@ if(isset($_GET['sflr_delete']) && $_GET['sflr_delete'] == true){
       </select>
     </div>
   </div>
+</div>
+
+<div id="selectCam" class="hidden">
+  <div class="adtoInner">
+    <div class="form-group">
+      <label for="allJourney">Select the Sub-Campaign</label>
+      <select name="alljourney" id="alljourney" class="form-control">
+        <option value="">Select Sub-Campaign</option>
+        <?php 
+          $allSubCampaigns = $wpdb->get_results('SELECT `id`, `scmp_name` FROM '.$tbl_subcampaign.'', OBJECT);
+          foreach($allSubCampaigns as $sO):
+        ?>
+          <option value="<?php echo $sO->id; ?>"><?php echo $sO->scmp_name; ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+  <div class="startCamp mt20">
+    <a href="http://intrabox.co/wp-admin/admin.php?page=crm&amp;adto=ronymaha@gmail.com,alpha0202@gmail.com,jcdangond@intermarket.com.co,luisricardoss@hotmail.com,rrwr@gmail.com,sadfsfd@sdsd.com,jcdangweond@intermarket.com.co,jess.movilla31@gmail.com,ronymaha11@gmail.com,jkhkjh@iu.com" class="button button-primary"><?php echo __('Start Campaign', 'allwebbox'); ?></a>
+  </div>
+  </div>
+
 </div>
 
 <?php endif; // check is array or not ?>

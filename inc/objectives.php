@@ -24,7 +24,7 @@
 
 	     			<div class="tempNewInner tmhidden">
 	     			  
-	     			  <div class="ob_desc mt20">
+	     			  <div class="ob_desc mt20 mb20">
 	     			  		<textarea class="form-control" style="width:100%;" rows="4" name="ob_desc"><?php echo $sObj->ob_desc;  ?></textarea>
 	     			  </div>
 

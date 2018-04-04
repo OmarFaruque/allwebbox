@@ -101,6 +101,12 @@ class Allwebbox{
 		add_action('wp_ajax_nopriv_updateCampaignTitle', array($this, 'updateCampaignTitle'));
 		add_action( 'wp_ajax_updateCampaignTitle', array($this, 'updateCampaignTitle') );
 
+		/*UPdate Objective Name / Title */
+		add_action('wp_ajax_nopriv_updateObjectiveTitle', array($this, 'updateObjectiveTitle'));
+		add_action( 'wp_ajax_updateObjectiveTitle', array($this, 'updateObjectiveTitle') );
+
+		
+
 		/*Campaign Email Sent*/		
 		add_action('wp_ajax_nopriv_campaignEmailSent', array($this, 'campaignEmailSent'));
 		add_action( 'wp_ajax_campaignEmailSent', array($this, 'campaignEmailSent') );
@@ -275,7 +281,7 @@ class Allwebbox{
 		         id int(10) NOT NULL AUTO_INCREMENT,
 		         cmp_name varchar(500) NOT NULL,
 		         obj int(20) NOT NULL,
-		         sub_obj varchar(300) NOT NULL,
+		         camp_desc text NOT NULL,
 		         created_dt timestamp NOT NULL,
 		         UNIQUE KEY id (id)
 		    ) $charset_collate;";
@@ -294,7 +300,9 @@ class Allwebbox{
 		    $sqlsc = "CREATE TABLE $this->tbl_subcampaign (
 		         id int(20) NOT NULL AUTO_INCREMENT,
 		         cid int(10) NOT NULL,
+		         sub_obj text NOT NULL,
 		         scmp_name varchar(500) NOT NULL,
+		         sub_camdesc text NOT NULL,
 		         type varchar(100) NOT NULL,
 		         landing int(50) NOT NULL,
 		         subject text NOT NULL,
@@ -303,6 +311,7 @@ class Allwebbox{
 		         sms text NOT NULL,
 		         push text NOT NULL,
 		         action int(10) NOT NULL,
+		         action_complete text NOT NULL,
 		         nd_action text NOT NULL,
 		         created_dt timestamp NOT NULL,
 		         UNIQUE KEY id (id)
@@ -1088,14 +1097,19 @@ class Allwebbox{
 		$exTemplates 	= $this->wpdb->get_results('SELECT * FROM '.$this->template_table.'', OBJECT);
 		$sTemp 			= (isset($_GET['ltmpid']))?$_GET['ltmpid']:'';
 
+		$allObjectivs 	= $this->wpdb->get_results('SELECT `id`, `objective_name` FROM '.$this->tbl_objective.'', OBJECT);
+
+		$objectives = array();
 		$allPagesJs = array();
 		$allemTemp = array();
 		foreach($allpages as $sp)  $allPagesJs[$sp] = get_the_title( $sp );
+		foreach($allObjectivs as $scm) $objectives[$scm->id] = $scm->objective_name;
 		if($exTemplates) foreach($exTemplates as $st)  $allemTemp[$st->id] = $st->name;
 		echo "<script>
 			var entry_clmn 	= '".json_encode($columns)."';
 			var allPages 	= '".json_encode($allPagesJs)."';
 			var emalTems 	= '".json_encode($allemTemp)."';
+			var objectives 	= '".json_encode($objectives)."';
 			var sltTemp 	= '".$sTemp."';
 
 		</script>";
@@ -1250,10 +1264,11 @@ class Allwebbox{
 						$getMatchFDB = $this->wpdb->get_row('SELECT `'.$matches[1][$mk].'` FROM '.$this->entry_table.' WHERE id='.$singM->id.'', OBJECT);
 						$message = str_replace($sm, $getMatchFDB->$vFind, $message);
 					}
-
+					if(isset($_POST['assign_page'])){
 					$permalink 	= get_permalink($_POST['assign_page']) . '?j_id='.$jerney->id.'&email=' . $singM->email;
 
 					$message	 .= '<div style="text-align: center; overflow: hidden;line-height: 40px;"><a style="background: #4c4c4c; background: -moz-linear-gradient(top, #4c4c4c 0%, #595959 12%, #666666 25%, #474747 39%, #2c2c2c 49%, #000000 51%, #111111 60%, #2b2b2b 76%, #1c1c1c 91%, #131313 100%); background: -webkit-linear-gradient(top, #4c4c4c 0%,#595959 12%,#666666 25%,#474747 39%,#2c2c2c 49%,#000000 51%,#111111 60%,#2b2b2b 76%,#1c1c1c 91%,#131313 100%); background: linear-gradient(to bottom, #4c4c4c 0%,#595959 12%,#666666 25%,#474747 39%,#2c2c2c 49%,#000000 51%,#111111 60%,#2b2b2b 76%,#1c1c1c 91%,#131313 100%); color: #fff; text-decoration: none; font-size: 14px;  padding: 5px 10px; border-radius: 5px; line-height: 10px;" href="'.$permalink.'">Unsubscribe</a></div>';
+					}
 
 
 					
@@ -1942,6 +1957,10 @@ class Allwebbox{
 				$icon = ALWEBURL . 'assets/img/push.png';
 				
 				$seleEml = $this->wpdb->get_row('SELECT `email` FROM '.$this->entry_table.' WHERE ip="'.$ip.'"', OBJECT);
+
+
+
+
 				if($seleEml && in_array($seleEml->email, $allEmais)) {
 					if(!in_array($ip, $alreadySendP)){
 						 echo '<script>
@@ -1957,15 +1976,23 @@ class Allwebbox{
 						</script>';
 						array_push($alreadySendP, $ip);
 						$sendPJson = json_encode($alreadySendP);
+
+						$extComplete = $this->wpdb->get_row('SELECT `action_complete` FROM '.$this->tbl_subcampaign.' WHERE id='.$sCamp->id.'', OBJECT);
+						$exEm = ($extComplete->action_complete != '')?json_decode($extComplete->action_complete):array();
+						array_push($exEm, $seleEml->email);
+						$exEm = array_unique($exEm);
+						$newallEml = json_encode($exEm);
+
 						$updateSms = $this->wpdb->update(
 								$this->tbl_subcampaign,
 								array(
-									'push' => $sendPJson
+									'push' => $sendPJson,
+									'action_complete' => $newallEml
 								), 
 								array(
-									'id' => $sCamp->id
+									'id' => $sCamp->id,
 								), 
-								array('%s'),
+								array('%s', '%s'),
 								array('%d')
 							);
 
@@ -2014,14 +2041,23 @@ class Allwebbox{
 	      echo '<p><strong>' . __( 'Message / SMS Settings', 'allwebbox' ) . ':</strong></p><hr />';
     }
 
+    function admin_section_brand_title(){
+    	  echo '<p><strong>' . __( 'Brand Email, SMS & Push Settings', 'allwebbox' ) . ':</strong></p><hr />';
+    }
+
 
 	function admin_page_message_settings(){
-			add_settings_section( 'smart-marketing-message-settings', '', array( $this, 'admin_section_tags_title' ), 'socialunlock_settings_section_message' );
+			
+
+			add_settings_section( 'smart-marketing-brand-settings', '', array( $this, 'admin_section_brand_title' ), 'socialunlock_settings_section_brand' );
+
+	      	add_settings_section( 'smart-marketing-message-settings', '', array( $this, 'admin_section_tags_title' ), 'socialunlock_settings_section_message' );
 	      	register_setting( 'socialunlock_settings_message', 'message_count_as' );
 	      	add_settings_field( 'swcc_unlock_settings_tags_nolinks', __( 'Select Message Session', 'allwebbox') . '' , array( $this, 'message_count_per' ), 'socialunlock_settings_section_message', 'smart-marketing-message-settings', array( 'label_for' => 'message_count_as' ) );
 
 	      	register_setting( 'socialunlock_settings_message', 'message_count_amount' );
 	      	add_settings_field( 'allwebbox_settings_message_count', __( 'Message per Session', 'allwebbox') . '' , array( $this, 'message_count_count' ), 'socialunlock_settings_section_message', 'smart-marketing-message-settings', array( 'label_for' => 'message_count_amount' ) );
+
 	}
 
 	/*
@@ -2030,17 +2066,19 @@ class Allwebbox{
 	function configurationSmarMKT(){
 
 	  $url = admin_url( 'admin.php?page=' . $_GET['page'] . '&tab=' );
-      $current_tab = 'message';
+      $current_tab = 'brand';
       if ( isset( $_GET['tab'] ) ) {
         $current_tab = $_GET['tab'];
       }
-      if ( ! in_array( $current_tab, array('message', 'api') ) ) {
+      if ( ! in_array( $current_tab, array('message', 'api', 'brand' ) ) ) {
         $current_tab = 'message';
       }
       ?>
       <div class="wrap">
         <h1 id="pp-plugin-info-social-share-unlock"><?php echo __('Smart Marketing Configuration', 'allwebbox'); ?><span></span></h1>
         <h2 class="nav-tab-wrapper" id="wp-social_share">
+          <a href="<?php echo $url . 'brand'; ?>" class="nav-tab<?php if ( 'brand' == $current_tab ) { echo ' nav-tab-active'; } ?>"><?php _e( 'Brand Settings' ); ?></a>
+
           <a href="<?php echo $url . 'message'; ?>" class="nav-tab<?php if ( 'message' == $current_tab ) { echo ' nav-tab-active'; } ?>"><?php _e( 'Message Settings' ); ?></a>
           <a href="<?php echo $url . 'api'; ?>" class="nav-tab<?php if ( 'api' == $current_tab ) { echo ' nav-tab-active'; } ?>"><?php _e( 'API' ); ?></a>
         </h2>
@@ -2048,9 +2086,60 @@ class Allwebbox{
             <div class="postbox">
               <div class="inside">
                   <?php
+                  if($current_tab != 'brand' ){
                   settings_fields( 'socialunlock_settings_' . $current_tab );   
                   do_settings_sections( 'socialunlock_settings_section_' . $current_tab );
                   submit_button(); 
+              	}else{ ?>
+              		<div class="brandSettings" id="brandSettings">
+              			<div class="form-group">
+              				<label for="selectBrand">Select Brand</label>
+              				<?php 
+              					$allBrands = $this->wpdb->get_results('SELECT `id`, `brand_name` FROM '.$this->brandsms.' WHERE `brand_name`!=""', OBJECT);
+              				?>
+              				<select name="set_brands">
+              					<?php foreach($allBrands as $sB): ?>
+              					<option value="<?php echo $sB->id; ?>"><?php echo $sB->brand_name; ?></option>	
+              					<?php endforeach; ?>
+              				</select>
+              			</div>
+              			<div class="form-group">
+              				<table class="table">
+              					<thead>
+              						<tr>
+              							<th></th>
+              							<th>Email</th>
+              							<th>SMS</th>
+              							<th>Push MSN</th>
+              						</tr>
+              					</thead>
+              					<tbody>
+              						<tr>
+              							<th>Day</th>
+              							<td><input type="text" value="" class="form-control" name="day_email"/></td>
+              							<td><input type="text" value="" class="form-control" name="day_sms"/></td>
+              							<td><input type="text" value="" class="form-control" name="day_push"/></td>
+              						</tr>
+              						<tr>
+              							<th>Week</th>
+              							<td><input type="text" value="" class="form-control" name="week_email"/></td>
+              							<td><input type="text" value="" class="form-control" name="week_sms"/></td>
+              							<td><input type="text" value="" class="form-control" name="week_push"/></td>
+              						</tr>
+              						<tr>
+              							<th>Month</th>
+              							<td><input type="text" value="" class="form-control" name="month_email"/></td>
+              							<td><input type="text" value="" class="form-control" name="month_sms"/></td>
+              							<td><input type="text" value="" class="form-control" name="month_push"/></td>
+              						</tr>
+              					</tbody>
+              				</table>
+              			</div>
+              			<?php submit_button(); ?>
+              		</div>
+              	<?php
+              	}
+
                  ?>
               </div>
             </div>
@@ -2117,16 +2206,16 @@ class Allwebbox{
 	* Store Campaign storeCampaign
 	*/
 	function storeCampaign(){
-		$alldata = $_POST['formdata'];
-		$camName = $_POST['campaign'];
-		$exid 	 = (isset($_POST['exid']))?$_POST['exid']:'';
-		$campID  = (isset($_POST['campID']))?$_POST['campID']:'';
-		$obj 	 = (isset($_POST['obj']))?$_POST['obj']:'';
-		$sub_obj = (isset($_POST['sub_obj']))?json_encode($_POST['sub_obj']):'';
-		$allrdata = array();
+		$alldata 	= $_POST['formdata'];
+		$camName 	= $_POST['campaign'];
+		$exid 	 	= (isset($_POST['exid']))?$_POST['exid']:'';
+		$campID  	= (isset($_POST['campID']))?$_POST['campID']:'';
+		$obj 	 	= (isset($_POST['obj']))?$_POST['obj']:'';
+		$camp_desc 	= (isset($_POST['camp_desc']))?$_POST['camp_desc']:'';
+		$allrdata 	= array();
 
 		foreach($alldata as $sd){
-			$allrdata[$sd['name']] = $sd['value']; 	
+			$allrdata[$sd['name']] = ($sd['name'] == 'sub_obj')?json_encode($sd['value']):$sd['value']; 	
 		}
 		unset($allrdata['loadTemplate']); 
 
@@ -2139,9 +2228,9 @@ class Allwebbox{
 			$update = $this->wpdb->update(
 				$this->tbl_campaign, 
 				array(
-					'cmp_name' 	=> $camName,
-					'obj' 		=> $obj,
-					'sub_obj' 	=> $sub_obj
+					'cmp_name' 		=> $camName,
+					'obj' 			=> $obj,
+					'camp_desc' 	=> $camp_desc
 				),
 				array('id' => (int)$campID),
 				array('%s', '%s', '%s'),
@@ -2153,9 +2242,9 @@ class Allwebbox{
 			$insert = $this->wpdb->insert(
 				$this->tbl_campaign, 
 				array(
-					'cmp_name'	=> $camName,
-					'obj' 		=> $obj,
-					'sub_obj' 	=> $sub_obj
+					'cmp_name'		=> $camName,
+					'obj' 			=> $obj,
+					'camp_desc' 	=> $camp_desc
 				),
 				array(
 					'%s', 
@@ -2211,6 +2300,7 @@ class Allwebbox{
 			}
 		}	
 
+		print_r($allrdata);
 
 		die();
 	} // End StoreCampaign
@@ -2272,15 +2362,15 @@ class Allwebbox{
 		$id 		= $_POST['id'];
 		$title 		= $_POST['title'];
 		$obj 		= $_POST['obj'];
-		$sub_obj 	= (isset($_POST['sub_obj']))?$_POST['sub_obj']:array();
-		$sub_objJS 	= json_encode($sub_obj);
+		$camp_desc 	= (isset($_POST['camp_desc']))?$_POST['camp_desc']:'';
+		
 
 		$update = $this->wpdb->update(
 			$this->tbl_campaign,
 			array(
-				'cmp_name' 	=> $title,
-				'obj' 		=> $obj,
-				'sub_obj' 	=> $sub_objJS
+				'cmp_name' 		=> $title,
+				'obj' 			=> $obj,
+				'camp_desc' 	=> $camp_desc
 			),
 			array('id' => $id),
 			array(
@@ -2301,12 +2391,48 @@ class Allwebbox{
 	// End update Campaign title only
 
 
+
+
+
+
+
+	/*
+	* Update Objective Title only
+	*/
+	function updateObjectiveTitle(){
+		$id 		= $_POST['id'];
+		$title 		= $_POST['title'];
+		$ob_desc 	= (isset($_POST['obj_desc']))?$_POST['obj_desc']:'';
+		
+
+		$update = $this->wpdb->update(
+			$this->tbl_objective,
+			array(
+				'objective_name' 	=> $title,
+				'ob_desc' 			=> $ob_desc
+			),
+			array('id' => $id),
+			array(
+				'%s',
+				'%s'
+			),
+			array('%d')
+		);
+
+		if($update){
+			echo 'success';
+		}
+
+		die();
+	}
+
+	// End update Objective title only
+
+
 	/*
 	* Campaign Email Sent
 	*/
 	function campaignEmailSent(){
-
-
 		$id = $_POST['id'];
 		$emails = $_POST['emails'];
 		$js_emails = (count($_POST['emails']) > 0)?json_encode($emails):'';
@@ -2364,6 +2490,7 @@ class Allwebbox{
 	
 		
 		$objID = '';
+		$output = array();
 		if($campID != ''){
 			$update = $this->wpdb->update(
 				$this->tbl_campaign, 
@@ -2384,7 +2511,7 @@ class Allwebbox{
 						array('%s', '%s')
 					);
 			$objID = $this->wpdb->insert_id;
-			echo $objID;
+			$output['obj_id'] = $objID;
 		}else{
 			$update = $this->wpdb->update(
 					$this->tbl_objective,
@@ -2395,7 +2522,6 @@ class Allwebbox{
 					array('id' => $exitObj->id),
 					array('%s', '%s'),
 					array('%d')
-
 			);
 			$objID = $exitObj->id;	
 		}
@@ -2413,11 +2539,11 @@ class Allwebbox{
 					array('%d')
 				);
 
-				if($updateSub){
+				/*if($updateSub){
 					echo 'update success';
 				}else{
 					echo 'update failed';
-				}
+				}*/
 			}else{
 				$insertSub = $this->wpdb->insert(
 					$this->tbl_subobjective,
@@ -2432,8 +2558,11 @@ class Allwebbox{
 						'%s'
 					)	
 				);
+				$output['subObid'] = $this->wpdb->insert_id;
 			}
 		}
+		echo json_encode($output);
+
 		die();
 	} 
 
@@ -2485,6 +2614,7 @@ class Allwebbox{
 	* Select Sub Objects for Campaign page
 	*/
 	function selectRltSubObject(){
+
 		$id = $_POST['id'];
 		$subObjcs = $this->wpdb->get_results('SELECT * FROM '.$this->tbl_subobjective.' WHERE oids='.$id.'');
 		echo json_encode($subObjcs);
@@ -2554,6 +2684,139 @@ class Allwebbox{
 			case "Profiling questions":
 	          $translated_text = __( 'Preguntas de Perfil','allwebbox' );
 	        break;
+			
+			case "All Forms":
+	          $translated_text = __( 'Todos los Formularios','allwebbox' );
+	        break;
+			
+			case "Your Form has been created Successfully":
+	          $translated_text = __( 'Tu formulario ha sido creado satisfactoriamente','allwebbox' );
+	        break;
+			
+			case "Short Code":
+	          $translated_text = __( 'Codigo de Formulario','allwebbox' );
+	        break;
+			
+			case "Total Enteries":
+	          $translated_text = __( 'Total de Entradas','allwebbox' );
+	        break;
+			
+			case "Form Created Date":
+	          $translated_text = __( 'Fecha Creación Formulario','allwebbox' );
+	        break;
+			
+			case "Action":
+	          $translated_text = __( 'Modificar','allwebbox' );
+	        break;
+			
+			case "Edit":
+	          $translated_text = __( 'Editar','allwebbox' );
+	        break;
+			
+			case "Delete":
+	          $translated_text = __( 'Eliminar','allwebbox' );
+	        break;
+			
+			case "Form Entries":
+	          $translated_text = __( 'Registros','allwebbox' );
+	        break;
+			
+			case "Email":
+	          $translated_text = __( 'Correo Electrónico','allwebbox' );
+	        break;
+			
+			case "Id Number":
+	          $translated_text = __( 'Número de Identificación','allwebbox' );
+	        break;
+			
+			case "Form Name":
+	          $translated_text = __( 'Nombre Formulario','allwebbox' );
+	        break;
+			
+			case "Entry Date":
+	          $translated_text = __( 'Fecha de Registro','allwebbox' );
+	        break;
+			
+			case "Detalles de Entradas":
+	          $translated_text = __( 'Nombre Formulario','allwebbox' );
+	        break;
+			
+			case "Data Successfully Update":
+	          $translated_text = __( 'Datos actualizados con éxito','allwebbox' );
+	        break;
+			
+			case "Data Update Faild":
+	          $translated_text = __( 'Actualización de datos fallida','allwebbox' );
+	        break;
+			
+			case "Item Name":
+	          $translated_text = __( 'Nombre de item','allwebbox' );
+	        break;
+			
+			case "Fill up Value":
+	          $translated_text = __( 'LLene el valor','allwebbox' );
+	        break;
+			
+			case "Back":
+	          $translated_text = __( 'Volver','allwebbox' );
+	        break;
+			
+			case "Back to List":
+	          $translated_text = __( 'Volver al Listado','allwebbox' );
+	        break;
+			
+			case "Edit Template":
+	          $translated_text = __( 'Editar Plantilla','allwebbox' );
+	        break;
+			
+			case "Template Name":
+	          $translated_text = __( 'Nombre Plantilla','allwebbox' );
+	        break;
+			
+			case "Submit":
+	          $translated_text = __( 'Registrar','allwebbox' );
+	        break;
+			
+			case "Edit Journey":
+	          $translated_text = __( 'Editar Campaña Automatizada','allwebbox' );
+	        break;
+			
+			case "Description of journey":
+	          $translated_text = __( 'Descripción de la Campaña Automatizada','allwebbox' );
+	        break;
+			
+			case "Goal of journey":
+	          $translated_text = __( 'Objetivo de la Campaña','allwebbox' );
+	        break;
+			
+			case "Name of Sender":
+	          $translated_text = __( 'Nombre del Emisor','allwebbox' );
+	        break;
+			
+			case "Reply email address":
+	          $translated_text = __( 'Dirección de Correo de Respuesta','allwebbox' );
+	        break;
+			
+			case "Email sent after":
+	          $translated_text = __( 'Correo enviado despúes','allwebbox' );
+	        break;
+			
+			case "Default":
+	          $translated_text = __( 'Predeterminado','allwebbox' );
+	        break;
+			
+			case "Each":
+	          $translated_text = __( '','allwebbox' );
+	        break;
+			
+			case "Name of Sender":
+	          $translated_text = __( 'Nmbre del Emisor','allwebbox' );
+	        break;
+			
+			case "Name of Sender":
+	          $translated_text = __( 'Nmbre del Emisor','allwebbox' );
+	        break;
+
 
 	        //add more items
 	     }

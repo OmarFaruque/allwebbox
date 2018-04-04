@@ -49,9 +49,13 @@ if(isset($_POST['sendto'])){
 ?>
 
 	<div class="wrap email_campains bgff p20">
-		<?php if(!isset($_GET['campains'])): ?>
-			<?php require_once(ALWEBDIR . 'inc/objectives.php'); ?>
-		<?php else: //if(!isset($_GET['objectives'])): ?>
+		<?php if(!isset($_GET['campains']) && !isset($_GET['history'])):
+			require_once(ALWEBDIR . 'inc/objectives.php'); 
+
+		elseif(isset($_GET['history'])): 
+			require_once(ALWEBDIR . 'inc/strategy_history.php'); 	
+
+		else: //if(!isset($_GET['objectives'])): ?>
 		<div style="overflow:hidden;" id="sendSelectedEmail" class="innerpageallwebbox">
 				<div class="suecessMessage">
 					<?php echo (isset($query))?$msg:''; ?>
@@ -70,8 +74,12 @@ if(isset($_POST['sendto'])){
 						$queryst =(isset($_GET['send_mails']))?http_build_query(array('send_mails' => $_GET['send_mails'])):'';	
 					?>
 					<?php if(isset($_GET['send_mails'])): ?>
+			
 					<a href="<?php echo admin_url( $path = '/admin.php?page=my-menu&' . $queryst, $scheme = 'admin' ); ?>" class="button button-primary button-bigger"><?php echo __('Objectives', 'allwebbox'); ?></a>
 				<?php else: ?>
+		
+					<a style="margin-right:20px;" href="<?php echo admin_url( $path = '/admin.php?page=my-menu&history=1', $scheme = 'admin' ); ?>" class="button button-primary button-bigger"><?php echo __('Communication History', 'allwebbox'); ?></a>
+
 					<a href="<?php echo admin_url( $path = '/admin.php?page=my-menu', $scheme = 'admin' ); ?>" class="button button-primary button-bigger"><?php echo __('Objectives', 'allwebbox'); ?></a>
 				<?php endif; ?>
 					</div>
@@ -89,17 +97,9 @@ if(isset($_POST['sendto'])){
 			      </div>
 			    </div>
 				<?php endif; ?>
-			     <div class="userParemeters" id="campaignPrameter">
-		            <label><?php echo __('User Parameters', 'allwebbox'); ?> <span alt="f139" class="dashicons dashicons-arrow-right"></span></label>
-		            <ul class="usParementslist hidden">
-		              <?php foreach($columns as $sCl): ?>
-		                <li data-param="<?php echo $sCl; ?>">[<?php echo $sCl; ?>]</li>
-		              <?php endforeach; ?>
-		            </ul>
-		          </div>
 		        <?php foreach($allCamps as $sCmp): 
 		        	$scampaigns = $wpdb->get_results('SELECT * FROM '.$tbl_subcampaign.' WHERE cid='.$sCmp->id.'', OBJECT);
-		        	$sub_obs = ($sCmp->sub_obj != '')?json_decode($sCmp->sub_obj):array();
+		        	//$sub_obs = ($sCmp->sub_obj != '')?json_decode($sCmp->sub_obj):array();
 		        ?> 
 			    <div class="newTemplate emailCampaign">
 				    <div class="SlidingP">
@@ -120,7 +120,7 @@ if(isset($_POST['sendto'])){
 
 			          <div class="campoignObjective wrapp mt20">
 			          	<div class="form-group selectCampaign">
-			          		<label for="campaignName">Objective</label>
+			          		<label for="campaignName"><?php echo __('Objective', 'allwebbox'); ?></label>
 			          		<select class="form-control" name="campaignName">
 			          			<option value=""><?php echo __('Select Campaign', 'allwebbox'); ?></option>
 			          			<?php 
@@ -131,19 +131,26 @@ if(isset($_POST['sendto'])){
 			          			?>
 			          		</select>
 			          	</div>
+			          	<div class="campaignDesc">
+			          		<div class="form-group">
+			          			<label for="camp_desc"><?php echo __('Description', 'allwebbox'); ?></label>
+			          			<textarea rows="4" style="width:100%;" name="camp_desc"><?php echo $sCmp->camp_desc; ?></textarea>
+			          		</div>
+			          	</div>
+
 			          	<?php if($sCmp->obj != ''): 
 			          		$allSubObj = $wpdb->get_results('SELECT * FROM '.$tbl_subobjective.' WHERE oids='.$sCmp->obj.'', OBJECT);
 
 			          	?>
-			          	<div class="form-group selectSubCampaign">
-			          		<label for="subcampaignName"><?php echo __('Sub Objective', 'allwebbox'); ?></label>
+			          <!--	<div class="form-group selectSubCampaign">
+			          		<label for="subcampaignName"><?php //echo __('Sub Objective', 'allwebbox'); ?></label>
 			          		<select class="form-control" multiple name="subcampaignName">
-			          			<?php for($i=0; count($allSubObj) > $i; $i++){
-			          				$sSelectd = (in_array($allSubObj[$i]->id, $sub_obs))?'selected':''; 
-			          				echo '<option '.$sSelectd.' value="'.$allSubObj[$i]->id.'">'.$allSubObj[$i]->sub_obj.'</option>';
-			          			} ?>
+			          			<?php //for($i=0; count($allSubObj) > $i; $i++){
+			          				//$sSelectd = (in_array($allSubObj[$i]->id, $sub_obs))?'selected':''; 
+			          			//	echo '<option '.$sSelectd.' value="'.$allSubObj[$i]->id.'">'.$allSubObj[$i]->sub_obj.'</option>';
+			          			//} ?>
 			          		</select>
-			          	</div>
+			          	</div>-->
 			          	<?php endif; ?>
 
 			          </div>
@@ -168,73 +175,34 @@ if(isset($_POST['sendto'])){
 						<input type="text" name="scmp_name" class="form-control" value="<?php echo $each->scmp_name; ?>" placeholder="Sub-Campaign Name..." />
 
 						<!-- // End Sub-Campaign Name -->
-						<div class="threeRow row">
 
-						<div class="form-group three two">
-						<label for="type"><?php echo __('Campaign Type', 'allwebbox'); ?></label>
-						<select class="form-control" name="type">
-							<?php 
-								$typeArray = array('Email', 'SMS', 'PUSH to Browser');
-								foreach($typeArray as $ty){
-								$tySelec = (str_replace(' ', '', strtolower($ty)) == $each->type)?'selected':''; 
-								echo '<option '.$tySelec.' value="'.str_replace(' ', '', strtolower($ty)).'">'.$ty.'</option>';	
-								}
-							?>
-						</select>
+
+						<!-- Selected Sub Objective  -->
+						<?php
+
+						$relatedSubObj = $wpdb->get_results('SELECT `id`, `sub_obj` FROM '.$tbl_subobjective.' WHERE oids='.$sCmp->obj.'', OBJECT);
+						$jSubObs = json_decode($each->sub_obj);
+						
+						?>
+						<div class="form-group selectSubCampaign">
+							<label for="subcampaignName"><?php echo __('Sub Objective', 'allwebbox'); ?></label>
+							<select class="form-control" multiple="" name="sub_obj">
+								<?php 
+									foreach($relatedSubObj as $sob){
+										$sLtd = (in_array($sob->id, $jSubObs[0]))?'selected':'';
+										echo '<option '.$sLtd.' value="'.$sob->id.'">'.$sob->sub_obj.'</option>';		
+									}
+								?>
+							</select>
 						</div>
 
 
-						<div class="form-group three thr">
-						<label for="assign_page"><?php echo __('Landing Page / Form', 'allwebbox'); ?></label>
-						<select class="form-control" name="landing">
-						<option value=""><?php echo __('Select Landing Page', 'allwebbox'); ?></option>
-							<?php 
-								$allpages = get_all_page_ids(); 
-								foreach($allpages as $spg){
-									$slpage = ($spg == $each->landing)?'selected':'';
-									echo '<option '.$slpage.' value="'.$spg.'">'.get_the_title( $spg ).'</option>';	
-								} 
-							?>
-						</select>
-						</div>
-						</div>
+						<!-- End Selected Sub Objective -->
 
-			    		<div class="form-group">
-			    		<label for="esubject"><?php echo __('Email Subject', 'allwebbox'); ?></label>
-			    		<input type="text" name="subject" class="form-control" value="<?php echo $each->subject; ?>" />
-			    		</div>
 
 						<div class="form-group">
-							<div class="halfDiv">
-
-							
-
-							<div class="pull-left">
-							<label for="content"><?php echo __('Content', 'allwebbox'); ?></label>
-							</div>
-
-
-							<div class="pull-right">
-							<div class="inlinelabel">
-							<label for="loadExistingTemplate"></label>
-							<select id="loadExistingTemplate" name="loadTemplate">
-							<option value=""><?php echo __('Load Template...', 'allwebbox'); ?></option>
-							<?php 
-								$exTemplates 	= $wpdb->get_results('SELECT * FROM '.$template_table.'', OBJECT);
-								foreach($exTemplates as $tmplt) echo '<option value="'.$tmplt->id.'">'.$tmplt->name.'</option>';
-							?>
-
-							</select>
-							</div>
-							</div>
-							</div>
-							
-							<div class="visualTextArea <?php echo ($each->type != 'email')?'hidden':''; ?>">
-								<textarea class="form-control tinymce" style="width:100%; min-height:350px;" name="sc_content"><?php echo stripslashes($each->sc_content); ?></textarea>
-							</div>
-
-							<div class="smspushAea <?php echo ($each->type == 'email')?'hidden':''; ?>">
-								<textarea  name="smspush" rows="6" class="form-control"><?php echo $each->smspush; ?></textarea>
+							<div class="smspushAea">
+								<textarea  name="sub_camdesc" rows="6" class="form-control"><?php echo $each->sub_camdesc; ?></textarea>
 							</div>
 						</div>
 						<br>

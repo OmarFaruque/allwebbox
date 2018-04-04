@@ -497,11 +497,15 @@ jQuery(document).ready(function($){
 	 * Add new Sub-Campaign Start
 	 */
 	 $(document.body).on('click', 'div.addnewSubCampaign span', function(){
-		
+	 	$('.awbox-spinner').show();
+		var thisI = $(this);
 		var allPagesj 	= jQuery.parseJSON(allPages);
 		var alletemp 	= jQuery.parseJSON(emalTems);
 		var prPages 	= '';
 		var templates 	= '';
+		var id 			= $(this).closest('.newTemplate.emailCampaign').find('select[name="campaignName"]').val();
+
+		
 		
 		$.each(allPagesj, function(k, v) {
 		    prPages += '<option value="'+k+'">'+v+'</option>';
@@ -512,8 +516,20 @@ jQuery(document).ready(function($){
 		});
 
 
+
 		var lengh = $('.newTemplate').length;
-	 	$newTemplate = '<div class="newTemplate newSubCampaign">'
+
+
+				$.ajax({
+				type:'POST', 
+			    url: webbox,
+			    dataType: 'json',
+			    data:
+			        {
+			        'action'	: 'selectRltSubObject',
+			    	'id'		: id
+			        },success:function(data){
+						$newTemplate = '<div class="newTemplate newSubCampaign">'
 	 					+ '<form action="" method="post" accept-charset="utf-8">'
 	 					+ '<div class="deleteSubCamp"><span alt="f153" class="dashicons dashicons-dismiss"></span></div>'
 	 					+ '<div class="wrap email_campains bgff p20">'
@@ -522,60 +538,18 @@ jQuery(document).ready(function($){
 						// Sub-Campaign Name
 						+ '<input type="text" name="scmp_name" class="form-control" value="" placeholder="Sub-Campaign Name..." />'
 
-						// End Sub-Campaign Name
-
-						+ '<div class="threeRow row">'
-
-						+ '<div class="form-group three two">'
-						+ '<label for="type">Campaign Type</label>'
-						+ '<select class="form-control" name="type">'
-						+ '<option value="email">Email</option>'
-						+ '<option value="sms">SMS</option>'
-						+ '<option value="pushtobrowser">PUSH to Browser</option>'
-						+ '</select>'
-						+ '</div>'
-
-
-						+ '<div class="form-group three thr">'
-						+ '<label for="assign_page">Landing Page / Form</label>'
-						+ '<select class="form-control" name="landing">'
-						+ '<option value="">Select Landing Page</option>'
-						+ prPages
-						+ '</select>'
-						+ '</div>'
-						+ '</div>'
-
-			    		+ '<div class="form-group">'
-			    		+ '<label for="esubject">Email Subject</label>'
-			    		+ '<input type="text" name="subject" class="form-control" value="" />'
-			    		+ '</div>'
-
+						+'<div class="form-group selectSubCampaign">'
+			       		+'<label for="subcampaignName">Sub Objective</label>'
+			          	+'<select class="form-control" multiple name="sub_obj">';
+				       	$.each(data, function(k, v) {
+				       		$newTemplate +='<option value="'+v.id+'">'+v.sub_obj+'</option>';	
+				       	});
+				       	$newTemplate +='</select></div>'
+						// End Sub-Campaign Name 
 						+ '<div class="form-group">'
 						+ '<div class="halfDiv">'
 
-						
-
-						+ '<div class="pull-left">'
-						+ '<label for="content">Content</label>'
-						+ '</div>'
-
-
-						+ '<div class="pull-right">'
-						+ '<div class="inlinelabel">'
-						+ '<label for="loadExistingTemplate"></label>'
-						+ '<select id="loadExistingTemplate" name="loadTemplate">'
-						+ '<option value="">Load Template...</option>'
-						+ templates	
-						+ '</select>'
-						+ '</div>'
-						+ '</div>'
-						+ '</div>'
-
-
-
-
-						+ '<div class="visualTextArea"><textarea class="form-control tinymce" style="width:100%; min-height:350px;" name="sc_content"></textarea></div>'
-						+ '<div class="smspushAea hidden"><textarea  name="smspush" rows="6" class="form-control"></textarea></div>'
+						+ '<div class="smspushAea"><textarea  name="sub_camdesc" rows="6" class="form-control"></textarea></div>'
 						+ '</div>'
 						+ '<br>'
 						+ '<input type="submit" name="scampain_submit" value="Submit" class="button button-primary" />'
@@ -583,7 +557,25 @@ jQuery(document).ready(function($){
 						+ '</div>'
 						+ '</form>'
     					+ '</div>';
-    	$($newTemplate).insertBefore($(this).closest('.addnewSubCampaign'));
+
+						$($newTemplate).insertBefore(thisI.closest('.addnewSubCampaign'));
+
+
+
+
+			        	
+			        	
+				       	$('.awbox-spinner').hide();
+			        }
+    			}); // Ajax
+
+
+
+	 
+
+
+
+    	
     	$('.datepicker').datepicker({
 	 		dateFormat: "yy-mm-dd",
 	 		changeMonth: true,
@@ -1075,17 +1067,20 @@ jQuery(document).ready(function($){
 	  	});
 	  	var ckechValJson  = checkVal.join();
 	  	
-
+	  	var href = window.location.href;
 	  	if(chekedLen > 0){
 
-	  		$('.atttoJourny').remove();
-	  		$outHtml = '<div class="atttoJourny mt20"><a href="'+window.location.href + '&adto=' + ckechValJson +'" class="button button-primary">Add to Journey</a></div>';
+	  		$('.atttoJourny, .startCamp').remove();
+	 		$campHtml = '<div class="startCamp mt20"><a href="'+ href + '&a_action=startcampaign&send_mails=' + ckechValJson +'" class="button button-primary">Start Campaign</a></div>';
+	  		$outHtml = '<div class="atttoJourny mt20"><a href="'+href+ '&adto=' + ckechValJson +'" class="button button-primary">Add to Journey</a></div>';
+	  		
 	  		//$($outHtml).insertAfter($('#searchReasult_wrapper'));
 	  		$('div#addToJourneyForm').append($outHtml);
-	  		$('div#addToJourneyForm').removeClass('hidden');
+	  		$('div#selectCam .adtoInner').append($campHtml);
+	  		$('div#addToJourneyForm, div#selectCam').removeClass('hidden');
 	  	}else{
-	  		$('.atttoJourny').remove();
-	  		$('div#addToJourneyForm').addClass('hidden');
+	  		$('.atttoJourny, .startCamp').remove();
+	  		$('div#addToJourneyForm, div#selectCam').addClass('hidden');
 	  	}
 	  });
 
@@ -1133,9 +1128,9 @@ jQuery(document).ready(function($){
 	  */
 	  $(document.body).on('change', 'select[name="selectType"]', function(){
 	  	if($(this).val() == 'email'){
-	  		$('.toEmail, .toSms, div.mce-tinymce.mce-container, textarea.normal, div.form-group.email, .sectionAllow.crm.‍sendEmail').toggleClass('hidden');
+	  		$('.toEmail, .visualTextArea, .toSms, div.mce-tinymce.mce-container, .esubject.replay, #loadTemplate, textarea.normal, div.form-group.email, .sectionAllow.crm.‍sendEmail').toggleClass('hidden');
 	  	}else{
-	  		$('.toEmail, .toSms, div.mce-tinymce.mce-container, textarea.normal, div.form-group.email, .sectionAllow.crm.‍sendEmail').toggleClass('hidden');
+	  		$('.toEmail, .toSms, div.mce-tinymce.mce-container, .esubject.replay, .visualTextArea, #loadTemplate, textarea.normal, div.form-group.email, .sectionAllow.crm.‍sendEmail').toggleClass('hidden');
 	  	}
 	  });
 
@@ -1188,13 +1183,18 @@ jQuery(document).ready(function($){
 	  		var exID 			= $(this).data('exid');
 	  		var campID 			= $(this).data('campaign');
 	  		var obj 			= $(this).closest('.newTemplate.emailCampaign').find('select[name="campaignName"]').val();
-	  		var sub_obj 		= $(this).closest('.newTemplate.emailCampaign').find('select[name="subcampaignName"]').val();
+	  		var camp_desc 		= $(this).closest('.newTemplate.emailCampaign').find('textarea[name="camp_desc"]').val();
 	  		var alldata 		= $(this).serializeArray();
 	  		var subCampTitle 	= $(this).find('input[name="scmp_name"]').val(); 
 	  		var campainName 	= $(this).closest('.newTemplate.emailCampaign').find('input[name="campain_name"]').val();
 			
-	  		
-
+			var realvalues = new Array();//storing the selected values inside an array
+    		thisv.find('select[name="sub_obj"]').each(function(i, selected) {
+        		realvalues[i] = $(selected).val();
+    		});
+    		alldata[alldata.length] = { name: "sub_obj", value: realvalues };
+			
+	  		console.log(alldata);
 			    $.ajax({
 						type:'POST', 
 			            //dataType: 'json',
@@ -1207,7 +1207,7 @@ jQuery(document).ready(function($){
 			                'exid' 		: exID,
 			                'campID' 	: campID,
 			                'obj' 		: obj,
-			                'sub_obj' 	: sub_obj
+			                'camp_desc' : camp_desc
 			            },success:function(data){
 			            			console.log(data);
 			            			$('.awbox-spinner').hide();
@@ -1217,6 +1217,7 @@ jQuery(document).ready(function($){
 			            			}
 			            			thisv.closest('.newTemplate.emailCampaign').find('.SlidingP span.dashicons').removeClass('dashicons-arrow-down').addClass('dashicons-arrow-right');
 			            			thisv.closest('.tempNewInner').addClass('tmhidden');
+			            			thisv.find('.subCamptitle.title').remove();
 			            			$('<div class="subCamptitle title"><div class="titleInner"><h4><span alt="f345" class="dashicons dashicons-arrow-right-alt2"></span>&nbsp;'+subCampTitle+'</h4></div></div>').insertAfter($(thisv.find('.deleteSubCamp')));
 			            			thisv.closest('.newTemplate.emailCampaign').find('.SlidingP span.title').text(campainName);
 			            			thisv.closest('.newTemplate.emailCampaign').find('.SlidingP span.title').removeClass('hidden');
@@ -1242,11 +1243,11 @@ jQuery(document).ready(function($){
 	  		var ObjectName 	= $(this).closest('.newTemplate.newObjectiveW').find('input[name="objective_name"]').val();
 	  		var sub_desc 	= $(this).find('textarea[name="sub_desc"]').val();	
 
-	  		console.log('ob_desc:  ' + ob_desc );
+	  		//console.log('ob_desc:  ' + ob_desc );
 			   
 			    $.ajax({
 						type:'POST', 
-			            //dataType: 'json',
+			            dataType: 'json',
 			            url: webbox,
 			            data:
 			            {
@@ -1259,13 +1260,20 @@ jQuery(document).ready(function($){
 			                'sub_desc' 		: sub_desc
 			            },success:function(data){
 			            			console.log(data);
+			            			
 			            			$('.awbox-spinner').hide();
-			            			if(data != '' && !isNaN(data)){
-			            				$('<div class="tempEditOjb" data-id="'+data+'"><span alt="f464" class="dashicons dashicons-edit"></span></div>').insertAfter($(thisv.closest('.newTemplate.newObjectiveW').find('.objectDelete')));
-			            				thisv.closest('.newTemplate.newObjectiveW').find('.objectDelete').attr('data-id', data);
+			            			if(typeof data.obj_id !== 'undefined' && !isNaN(data.obj_id)){
+			            				$('<div class="tempEditOjb" data-id="'+data.obj_id+'"><span alt="f464" class="dashicons dashicons-edit"></span></div>').insertAfter($(thisv.closest('.newTemplate.newObjectiveW').find('.objectDelete')));
+			            				thisv.closest('.newTemplate.newObjectiveW').find('.objectDelete').attr('data-id', data.obj_id);
 			            			}
+
+			            			if(typeof data.subObid !== 'undefined' && !isNaN(data.subObid)){
+			            				thisv.find('.deleteSubObj').attr('data-id', data.subObid);
+			            			}
+
 			            			thisv.closest('.newTemplate.newObjectiveW').find('.SlidingP span.dashicons').removeClass('dashicons-arrow-down').addClass('dashicons-arrow-right');
 			            			thisv.closest('.tempNewInner').addClass('tmhidden');
+			            			thisv.find('div.subCamptitle.title').remove();
 			            			$('<div class="subCamptitle title"><div class="titleInner"><h4><span alt="f345" class="dashicons dashicons-arrow-down-alt2"></span>&nbsp;'+subObj+'</h4></div></div>').insertAfter($(thisv.find('.deleteSubObj')));
 			            			thisv.closest('.newTemplate.newObjectiveW').find('.SlidingP span.title').text(ObjectName);
 			            			thisv.closest('.newTemplate.newObjectiveW').find('.SlidingP span.title').removeClass('hidden');
@@ -1420,22 +1428,22 @@ jQuery(document).ready(function($){
 
 	  	if($(this).hasClass('updateit')){
 	  		$('.awbox-spinner').show();
-	  		var id 		= $(this).data('id');
-	  		var title 	= $(this).closest('.tempNewInner').prev('.SlidingP').find('input[name="campain_name"]').val(); 
-	  		var span 	= $(this).closest('.tempNewInner').prev('.SlidingP').find('span.title'); 
-	  		var obj 	= $(this).closest('.tempNewInner').find('select[name="campaignName"]').val();
-	  		var sub_obj = $(this).closest('.tempNewInner').find('select[name="subcampaignName"]').val();
+	  		var id 			= $(this).data('id');
+	  		var title 		= $(this).closest('.tempNewInner').prev('.SlidingP').find('input[name="campain_name"]').val(); 
+	  		var span 		= $(this).closest('.tempNewInner').prev('.SlidingP').find('span.title'); 
+	  		var obj 		= $(this).closest('.tempNewInner').find('select[name="campaignName"]').val();
+	  		var camp_desc 	= $(this).closest('.tempNewInner').find('textarea[name="camp_desc"]').val();
 
 	  		  	$.ajax({
 				type:'POST', 
 			    url: webbox,
 			    data:
 			        {
-			        'action'	: 'updateCampaignTitle',
-			    	'id'		: id,
-			    	'title' 	: title,
-			    	'obj' 		: obj,
-			    	'sub_obj' 	: sub_obj
+			        'action'		: 'updateCampaignTitle',
+			    	'id'			: id,
+			    	'title' 		: title,
+			    	'obj' 			: obj,
+			    	'camp_desc' 	: camp_desc
 			        },success:function(data){
 				       	if(data == 'success'){
 				       		$('.awbox-spinner').hide();
@@ -1446,14 +1454,73 @@ jQuery(document).ready(function($){
 			        }
     			}); // Ajax
 	  	}
+	  	
 
 	  	$(this).children('span.dashicons').toggleClass('dashicons-edit');
-	  	$(this).children('span.dashicons').toggleClass('dashicons-yes');
-	  	$(this).toggleClass('updateit');
-	  	$(this).closest('.tempNewInner').toggleClass('active');
-	  	$(this).closest('.tempNewInner').prev('.SlidingP').find('span.title').toggleClass('hidden');
-	  	$(this).closest('.tempNewInner').prev('.SlidingP').find('input[name="campain_name"]').toggleClass('hidden');
-	  	$(this).closest('.tempNewInner').toggleClass('tmhidden');
+		$(this).children('span.dashicons').toggleClass('dashicons-yes');
+		$(this).addClass('updateit');
+		$(this).closest('.tempNewInner').prev('.SlidingP').find('span.title').toggleClass('hidden');
+		$(this).closest('.tempNewInner').prev('.SlidingP').find('input[name="campain_name"]').toggleClass('hidden');
+
+	  	if($(this).closest('.tempNewInner').hasClass('tmhidden')){
+		  	$(this).closest('.tempNewInner').prev('.SlidingP').find('.slidInner').children('span.dashicons').addClass('dashicons-arrow-down').removeClass('dashicons-arrow-right');
+		  	$(this).closest('.tempNewInner').addClass('active');
+		  	$(this).closest('.tempNewInner').removeClass('tmhidden');
+	  	}
+
+	  });
+
+
+
+
+
+
+	  /*
+	  * Edit Objective Title
+	  */
+	  $(document.body).on('click', '.tempNewInner div.tempEditOjb', function(){
+
+	  	if($(this).hasClass('updateit')){
+	  		$('.awbox-spinner').show();
+	  		var id 			= $(this).data('id');
+	  		var title 		= $(this).closest('.tempNewInner').prev('.SlidingP').find('input[name="objective_name"]').val(); 
+	  		var span 		= $(this).closest('.tempNewInner').prev('.SlidingP').find('span.title'); 
+	  		var obj_desc 	= $(this).closest('.tempNewInner').find('textarea[name="ob_desc"]').val();
+
+	  		console.log('Desc: ' + obj_desc);
+
+	  		  	$.ajax({
+				type:'POST', 
+			    url: webbox,
+			    data:
+			        {
+			        'action'		: 'updateObjectiveTitle',
+			    	'id'			: id,
+			    	'title' 		: title,
+			    	'obj_desc' 		: obj_desc
+			        },success:function(data){
+				       	if(data == 'success'){
+				       		$('.awbox-spinner').hide();
+				       		span.text(title);
+			        	}else{
+			        		$('.awbox-spinner').hide();
+			        	}
+			        }
+    			}); // Ajax
+	  	}
+	  	
+
+	  	$(this).children('span.dashicons').toggleClass('dashicons-edit');
+		$(this).children('span.dashicons').toggleClass('dashicons-yes');
+		$(this).addClass('updateit');
+		$(this).closest('.tempNewInner').prev('.SlidingP').find('span.title').toggleClass('hidden');
+		$(this).closest('.tempNewInner').prev('.SlidingP').find('input[name="objective_name"]').toggleClass('hidden');
+
+	  	if($(this).closest('.tempNewInner').hasClass('tmhidden')){
+		  	$(this).closest('.tempNewInner').prev('.SlidingP').find('.slidInner').children('span.dashicons').addClass('dashicons-arrow-down').removeClass('dashicons-arrow-right');
+		  	$(this).closest('.tempNewInner').addClass('active');
+		  	$(this).closest('.tempNewInner').removeClass('tmhidden');
+	  	}
 
 	  });
 
@@ -1473,6 +1540,12 @@ jQuery(document).ready(function($){
 	  * Add New Campaign
 	  */
 	  $(document.body).on('click', 'div#addnewCampaign', function(){
+	  	var camp;
+	  	var Jobjective = jQuery.parseJSON(objectives);
+	  	$.each(Jobjective, function(k, v) {
+	  		camp +='<option value="'+k+'">'+v+'</option>';
+	  	});
+
 	  	if(!$(this).hasClass('newObjective')){
 	  		var newHtml = '<div class="newTemplate emailCampaign">'
 					    +'<div class="SlidingP">'
@@ -1484,7 +1557,19 @@ jQuery(document).ready(function($){
 				        +'</div>'
 
 		     			+'<div class="tempNewInner tmhidden">'
-				          
+				          +'<div class="form-group selectCampaign mt15">'
+			          		+'<label for="campaignName">Objective</label>'
+			          		+'<select class="form-control" name="campaignName">'
+			          			+'<option value="">Select Objective</option>'
+			          			+ camp
+			          		+'</select>'
+			          	+'</div>'
+			          	+'<div class="campaignDesc">'
+			          		+'<div class="form-group">'
+			          			+'<label for="camp_desc">Description</label>'
+			          			+'<textarea rows="4" style="width:100%;" name="camp_desc"></textarea>'
+			          		+'</div>'
+			          	+'</div>'
 				          +'<div class="camtempDelete">'
 				              +'<span alt="f158" class="dashicons dashicons-no"></span>'
 				          +'</div>'
@@ -1573,16 +1658,17 @@ jQuery(document).ready(function($){
 			        'action'	: 'selectRltSubObject',
 			    	'id'		: id
 			        },success:function(data){
-			        	console.log(data);
-			        	thisCmp.next('.selectSubCampaign').remove();
+			        	//console.log(data);
+			        	thisCmp.closest('.campoignObjective').nextAll('.newTemplate.newSubCampaign').find('.selectSubCampaign').remove();
 			        	outHtml +='<div class="form-group selectSubCampaign">';
 			        	outHtml += '<label for="subcampaignName">Sub Objective</label>';
-			          	outHtml +='<select class="form-control" multiple name="subcampaignName">';
+			          	outHtml +='<select class="form-control" multiple name="sub_obj">';
 				       	$.each(data, function(k, v) {
 				       		outHtml +='<option value="'+v.id+'">'+v.sub_obj+'</option>';	
 				       	});
 				       	outHtml +='</select></div>';
-				       	$(outHtml).insertAfter(thisCmp);
+				       	thisCmp.closest('.campoignObjective').nextAll('.newTemplate.newSubCampaign').find('input[name="scmp_name"]').addClass("Omar Test");
+				       	$(outHtml).insertAfter(thisCmp.closest('.campoignObjective').nextAll('.newTemplate.newSubCampaign').find('input[name="scmp_name"]'));
 				       	$('.awbox-spinner').hide();
 			        }
     			}); // Ajax
@@ -1600,6 +1686,46 @@ jQuery(document).ready(function($){
 		}else{
 			$(this).closest('form').find('.smspushAea').addClass('hidden');
 			$(this).closest('form').find('.visualTextArea').removeClass('hidden');
+		}
+	});
+
+
+
+
+	/*
+	* Brand Configuration Submit
+	*/
+	$(document.body).on('click', 'div#brandSettings input[type="submit"]', function(e){
+		e.preventDefault();
+		var formData = $(this).closest('form').serializeArray();
+		console.log(formData);
+	});
+
+
+	/*
+	* REturn false if campaign name empty
+	*/
+	$(document.body).on('click', '.startCamp a', function(){
+		$(this).closest('.startCamp').prev('.form-group').find('select').addClass("test class");
+		var campName = $(this).closest('.startCamp').prev('.form-group').find('select').val();
+		var sbcmp = getQueryString('sbcmp', $(this).attr('href'));
+
+
+		var newQ = [];
+	  	$('#crmWrap').find('input[type="checkbox"]:checked').each(function(){
+	  		var q = $(this).closest('div.col-md-3').children('label:first-child').text();
+	  		newQ.push(q);
+	  	});
+	  	var inVal = newQ.join(';');
+	  	console.log(inVal);
+	  	//$('input[name="asqQsn"]').val(inVal);
+
+
+		if(sbcmp == null){
+			$(this).attr('href', $(this).attr('href') + '&sbcmp='+ campName + '&asqQsn=' + inVal );
+			return true;
+		}else{
+			return false;	
 		}
 	});
 

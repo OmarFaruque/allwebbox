@@ -2,54 +2,57 @@
 /*
 * Send Email
 */
-if(isset($_GET['a_action']) && $_GET['a_action'] == 'Start Campaign'){
-	$query = http_build_query(array('send_mails' => $_GET['send_mails']));	
-	wp_redirect( admin_url( $path = '/admin.php?page=my-menu&campains=1' . $query, $scheme = 'admin' ), $status = 302 );
-}
-
 
 
 function wpdocs_set_html_mail_content_type() {
    	return 'text/html';
 }
 
-/*if(isset($_POST['smail'])){
-	echo '<pre>';
-	print_r($_POST);
-	echo '</pre>';
-}*/
-
-
 global $wpdb;
-$entryTable   = $wpdb->prefix . 'awe_entry';
+$entryTable   		= $wpdb->prefix . 'awe_entry';
 $template_table 	= $wpdb->prefix . 'template_table';
-$smsAll = array_map('trim',array_filter($_GET['send_sms']));
-$smsAll = array_unique($smsAll);
-$smsAll = implode(',', $smsAll);
+$tbl_subcampaign 	= $wpdb->prefix . 'tbl_subcampaign'; 
+$columns = $wpdb->get_col("DESC " . $entryTable, 0);
+
+
 
 
 
 if(isset($_POST['smail']) && $_POST['selectType'] == 'email'){
-	$sendEmails	= array_unique($_GET['send_mails']);
+
+
+	$allpmail = (isset($_GET['a_action']))?explode(',', $_GET['send_mails']):$_GET['send_mails'];
+	$sendEmails	= array_unique($allpmail);
 
 
 	$subject 	= ($_POST['esubject'] != '')?$_POST['esubject']:get_bloginfo( 'name' );
 	
-	
-
 	//$headers[] = 'Content-Type: text/html; charset=UTF-8';
 	$headers = '';
+	//$headers .= 'Content-type: text/html;charset=utf-8' . "\r\n";
 	if($_POST['replay'] !='' && $_POST['replay_email'] !=''){
 		$name = $_POST['replay'];
 		$email = $_POST['replay_email'];
 		$headers .= "From: $name <$email>" . "\r\n";	
 	}
-	
+
+	$message  = stripslashes($_POST['smail']);
+	preg_match_all("/\[([^\]]*)\]/", $message, $matches);
+
 
 	$msg = '<ul>';
+
+
 	foreach($sendEmails as $to):
+
 		$idQry = $wpdb->get_row('SELECT `id` FROM '.$entryTable.' WHERE email="'.$to.'"', OBJECT);
-		$message  = stripslashes($_POST['smail']);
+		
+		foreach($matches[0] as $mk => $sm){
+					$vFind = $matches[1][$mk];
+					$getMatchFDB = $wpdb->get_row('SELECT `'.$matches[1][$mk].'` FROM '.$entryTable.' WHERE email="'.$to.'"', OBJECT);
+					$message = str_replace("'", "", str_replace($sm, $getMatchFDB->$vFind, $message));
+		}
+
 	if(isset($_GET['asqQsn']) && $_GET['asqQsn'] != ''){ 
 		$btnText 	= ($_POST['btn_text'] != '')?$_POST['btn_text']:'Hit me';
 		$btnBg 		= ($_POST['btn_bg'] != '')?$_POST['btn_bg']:'#090909';
@@ -64,11 +67,9 @@ if(isset($_POST['smail']) && $_POST['selectType'] == 'email'){
 		if($_POST['bg_overColor'] != '') 	array_push($lnStyle, 'bg_overColor='.$_POST['bg_overColor']); 
 		if($_POST['bg_overOpacity'] != '') 	array_push($lnStyle, 'bg_overOpacity='.$_POST['bg_overOpacity']); 
 
-		
-
 		$lnStyleImp = implode(';', $lnStyle);
 
-		
+				
 		
 		$message .= '<div style="text-align:center">';
 		$message .= '<form method="POST" action="'.get_home_url( $blog_id = null, $path = '', $scheme = null ).'">';
@@ -85,17 +86,37 @@ if(isset($_POST['smail']) && $_POST['selectType'] == 'email'){
 	remove_filter( 'wp_mail_content_type', 'wpdocs_set_html_mail_content_type' );
 
 
-
 	if($send){
 		$msg .= '<li><span alt="f147" class="dashicons dashicons-yes"></span> Mail Send to '. $to . '<li>';
+		
+		$id = (isset($_GET['sbcmp']))?$_GET['sbcmp']:'';
+		$extComplete = $wpdb->get_row('SELECT `action_complete` FROM '.$tbl_subcampaign.' WHERE id='.$id.'', OBJECT);
+		$exEm = ($extComplete->action_complete != '')?json_decode($extComplete->action_complete):array();
+		array_push($exEm, $to);
+		$exEm = array_unique($exEm);
+		$newallEml = json_encode($exEm);
+
+		$wpdb->update(
+			$tbl_subcampaign,
+			array('action_complete' => $newallEml), 
+			array('id' => (int)$id),
+			array('%s'),
+			array('%d')
+		);
 	}
 	endforeach; //End Mail Loop
 	$msg .= '</ul>';
 
 }elseif(isset($_POST['smail_sms']) && $_POST['selectType'] == 'sms'){
-	$exmobile 	= explode(',', $_POST['smsto']);
+
 	$message  	= stripslashes($_POST['smail_sms']);
-	foreach($exmobile as $smo){
+
+	$allpmail = (isset($_GET['a_action']))?explode(',', $_GET['send_mails']):$_GET['send_mails'];
+	$sendEmails	= array_unique($allpmail);
+
+
+	foreach($sendEmails as $smo){
+		$getM = $wpdb->get_row('SELECT `mobile` FROM '.$entryTable.' WHERE email="'.$smo.'"', OBJECT);
 		echo "<script>
 					jQuery.ajax({
 						type:'POST', 
@@ -105,7 +126,7 @@ if(isset($_POST['smail']) && $_POST['selectType'] == 'email'){
 			            {
 			                'envio[cliente]'   	: '18',
 			                'envio[apikey]'    	: 'f9f74c3d9a728ea0e23156430a2eb58b',
-			                'envio[telefono]' 	: '".$smo."',
+			                'envio[telefono]' 	: '".$getM->mobile."',
 			                'envio[mensaje]' 	: '".$message."'
 			            },success:function(data){
 			            		console.log('Success sms');
@@ -114,9 +135,42 @@ if(isset($_POST['smail']) && $_POST['selectType'] == 'email'){
 
     			}); // Ajax
 		</script>";
+
+
+		$id = (isset($_GET['sbcmp']))?$_GET['sbcmp']:'';
+		$extComplete = $wpdb->get_row('SELECT `action_complete` FROM '.$tbl_subcampaign.' WHERE id='.$id.'', OBJECT);
+		$exEm = ($extComplete->action_complete != '')?json_decode($extComplete->action_complete):array();
+		array_push($exEm, $smo);
+		$exEm = array_unique($exEm);
+		$newallEml = json_encode($exEm);
+
+		$wpdb->update(
+			$tbl_subcampaign,
+			array('action_complete' => $newallEml), 
+			array('id' => (int)$id),
+			array('%s'),
+			array('%d')
+		);
+
 	}
 
 } // End post 
+elseif(isset($_POST['smail_sms']) && $_POST['selectType'] == 'push'){
+	$allpmail = (isset($_GET['a_action']))?explode(',', $_GET['send_mails']):$_GET['send_mails'];
+	$js_emails = (count($allpmail) > 0)?json_encode($allpmail):'';
+	$id = (isset($_GET['sbcmp']))?$_GET['sbcmp']:'';
+			$updateAction = $wpdb->update(
+				$tbl_subcampaign, 
+				array(
+					'type' 		=> 'push',
+					'action' 	=> 1,
+					'nd_action' => $js_emails
+				),
+				array('id' => (int)$id), 
+				array('%s', '%d', '%s'),
+				array('%d')
+			);
+}
 
 
 
@@ -128,35 +182,48 @@ if(isset($_POST['smail']) && $_POST['selectType'] == 'email'){
 	  	<div class="msg">
 	  		<?php  echo (isset($msg))?$msg:''; ?>
 	  	</div>	  	
+
+	  
 	  	<hr>
-	  	<div class="form-group">
-	  		<select name="selectType">
-	  			<option value="email"><?php echo __('Email', 'allwebbox'); ?></option>
-	  			<option value="sms"><?php echo __('SMS', 'allwebbox'); ?></option>
-	  		</select>
-	  	</div>
-	  	<hr>
-	    <div class="form-group">
+	    <!--<div class="form-group">
 	      <div class="toEmail">
 	        <label>Send To</label>
-	        <?php foreach(array_unique($_GET['send_mails']) as $se): ?>
-	          <span class="semail"><?php echo $se; ?></span>
-	        <?php endforeach; ?>
+	        <?php //foreach(array_unique($_GET['send_mails']) as $se): ?>
+	          <span class="semail"><?php// echo $se; ?></span>
+	        <?php// endforeach; ?>
 	      </div>
 	      <div class="toSms hidden">
 	      	<label>Send To</label>
-	      	<?php foreach(array_unique($_GET['send_sms']) as $sms): ?>
-	          <span class="semail"><?php echo $sms; ?></span>
-	        <?php endforeach; ?>
+	      	<?php //foreach(array_unique($_GET['send_sms']) as $sms): ?>
+	          <span class="semail"><?php //echo $sms; ?></span>
+	        <?php //endforeach; ?>
 	      </div>
+	    </div>-->
+
+	    <?php if(isset($_GET['sbcmp'])): 
+	    $getsbCmpName = $wpdb->get_row('SELECT `scmp_name` FROM '.$tbl_subcampaign.' WHERE id='.$_GET['sbcmp'].'', OBJECT);
+	    ?>
+	    <div class="form-group subcName">
+	    	<label for="subCampName"><?php echo __('Communication Name', 'allwebbox'); ?></label>
+	    	<input type="text" name="subCampName" id="subCampName" value="<?php echo$getsbCmpName->scmp_name; ?>" class="form-control" /> 
 	    </div>
-	    <div class="form-group email">
-	      <div class="sublect">
+	    <?php endif; ?>
+
+	    <div class="form-group" style="overflow:hidden;">
+	      <div class="esubject replay name sublect pull-left half">
 	        <label for="esubject"><?php echo __('Email Subject', 'allwebbox'); ?></label>
 	        <input type="text" class="form-control" name="esubject" id="esubject" value="<?php echo (isset($_POST['esubject']))?$_POST['esubject']:''; ?>" />
 	      </div>
+	      <div class="pull-right half replay email">
+	      		 <label for="selectType"><?php echo __('Type of communication', 'allwebbox'); ?></label>
+	  		<select name="selectType" class="form-control">
+	  			<option value="email"><?php echo __('Email', 'allwebbox'); ?></option>
+	  			<option value="sms"><?php echo __('SMS', 'allwebbox'); ?></option>
+	  			<option value="push"><?php echo __('PUSH', 'allwebbox'); ?></option>
+	  		</select>
+	  	</div>
 	    </div>
-	   <div class="form-group email" style="overflow:hidden;">
+	   <div class="form-group email" style="overflow:hidden; width:100%; float:left; margin-top:10px;">
 	      <div class="replay name">
 	        <label for="replay"><?php echo __('Name of who sends', 'allwebbox'); ?></label>
 	        <input style="max-width:99%;" type="text" class="form-control" name="replay" id="replay" value="<?php echo (isset($_POST['replay']))?$_POST['replay']:''; ?>" />
@@ -179,14 +246,27 @@ if(isset($_POST['smail']) && $_POST['selectType'] == 'email'){
 	    		?>
 	    	</select>
 	    </div>-->
+
+
 	    <div class="form-group">
+
+	    <div class="userParemeters" id="campaignPrameter">
+            <label><?php echo __('User Parameters', 'allwebbox'); ?> <span alt="f139" class="dashicons dashicons-arrow-right"></span></label>
+            <ul class="usParementslist hidden">
+              <?php foreach($columns as $sCl): ?>
+                <li data-param="<?php echo $sCl; ?>">[<?php echo $sCl; ?>]</li>
+              <?php endforeach; ?>
+            </ul>
+        </div>
+
+
 	    <div class="halfDiv">
 	        <div class="smail">
 
 		        <div class="pull-left">
 		          <label for="smail">Content</label>
 		      	</div>
-		      	<div class="pull-right">
+		      	<div class="pull-right" id="loadTemplate">
 							<div class="inlinelabel">
 							<label for="loadExistingTemplate"></label>
 							<select id="loadExistingTemplate" name="loadTemplate">
@@ -225,10 +305,10 @@ if(isset($_POST['smail']) && $_POST['selectType'] == 'email'){
 	    </div>
 		</div>
 	
-	    <input type="hidden" name="smsto" value="<?php echo $smsAll; ?>">
+	    
 
-
-
+	    <br class="clearfix" />
+	    <?php if(isset($_GET['asqQsn']) && $_GET['asqQsn'] != ''): ?>
 	    <div class="sectionAllow crm ‍sendEmail">
 		    <div class="form-group">
 		      <div class="col-md-12">
@@ -324,13 +404,9 @@ if(isset($_POST['smail']) && $_POST['selectType'] == 'email'){
 		      </div>
 		    </div>
 		</div>
-
-
-
-
-
-
-	    <button type="submit" class="button button-primary"><?php echo __('Send Email', 'allwebbox'); ?></button>
+		<?php endif; ?>
+		<br class="clearfix">
+	    <button style="float:left;" type="submit" class="button button-primary"><?php echo __('Send Email', 'allwebbox'); ?></button>
 	    </div>
     </form>
   </div>

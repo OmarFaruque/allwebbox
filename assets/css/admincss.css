@@ -781,11 +781,14 @@ div#csvSuccess > div.message {
     color: #ffff;
     padding: 6px;
 }
+div#selectCam,
 div#addToJourneyForm {
-    max-width: 400px;
+    max-width: 450px;
     background-color: #ddd;
     padding: 15px;
     margin-top: 20px;
+    margin-right: 50px;
+    float: left;
 }
 select#alljourney.error {
     border-color: #f36a5a;
@@ -895,7 +898,6 @@ div#saveEmailStyle select {
 .innerSendEmail div.replay {
     width: 48%;
     float: left;
-    overflow: hidden;
     display: block;
     position: relative;
 }
@@ -907,6 +909,8 @@ div#saveEmailStyle select {
     margin-bottom: 20px;
 }
 .threQrtr.right{margin-right:0px; float: right;}
+
+.newTemplate.newObjectiveW .SlidingP input,
 .newTemplate.emailCampaign .SlidingP input {
     width: 90%;
 }
@@ -1003,14 +1007,7 @@ div#innersendTo span {
 .wrap.email_campains .form-group .half {
     float: left;
     min-width: 50%;
-}
-a.button.button-primary.button-bigger {
-    height: 40px;
-    width: 180px;
-    font-size: 20px;
-    text-align: center;
-    line-height: 38px;
-    float: right;
+    text-align: right;
 }
 .form-group.selectSubCampaign select,
 .form-group.selectCampaign select{
@@ -1031,4 +1028,26 @@ a.button.button-primary.button-bigger {
 }
 .newTemplate div#campaignPrameter {
     margin-bottom: 0;
+}
+.mb20{margin-bottom: 20px;}
+.mb50{margin-bottom: 50px;}
+
+.form-group .half {
+    max-width: 49%;
+    width: 49%;
+}
+.form-group .half select {
+    width: 99%;
+}
+.portlet.light.bordered{
+    overflow: hidden;
+}
+table#historyList thead {
+    background: #0085ba;
+    color: white;
+}
+table#historyList th, table#historyList td, table#historyList, table#historyList tbody {
+    border-color: #0085ba;
+    border: 1px solid #0085ba;
+    border-collapse: collapse;
 }

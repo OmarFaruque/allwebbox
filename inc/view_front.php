@@ -1,4 +1,10 @@
 <?php
+
+function wpdocs_set_html_mail_content_type() {
+   	return 'text/html';
+}
+
+
 function view_area($form_id) {
 	global $wpdb;
 	global $post;
@@ -21,32 +27,6 @@ function view_area($form_id) {
 	}
 
 	/* End Is Landing page from Email */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -84,10 +64,32 @@ function view_area($form_id) {
 
 
 
+
 	/*
 	* Post process
 	*/
 	if(isset($_POST['aw_submit'])){
+
+
+
+
+
+			
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		//$imploadOthers = implode(',', $_POST['others']);
 		$otherArray = array();
@@ -152,7 +154,7 @@ function view_area($form_id) {
 					$posts
 				);		
 		}elseif($qrUdate == true){
-			echo 'Inside Update <br/>';
+			//echo 'Inside Update <br/>';
 			$update = $wpdb->update(
 				$entry_table,
 				$posts,
@@ -170,10 +172,78 @@ function view_area($form_id) {
 		}
 
 
-		if($insert && $qrTrye == true)
+		if(isset($insert) && $qrTrye == true)
 		{	
 
-			$smsg = 'success';		
+			$smsg = 'success';	
+
+			/*
+			* Mail to user & admin
+			*/
+			
+			$adminEm = get_option( 'admin_email', $default = false );
+			$siteTitle = get_bloginfo( $show = 'name', $filter = 'raw' );
+
+			$allinputs = array_merge($_POST['contact_info'], $_POST['others'], $_POST['idQ']);
+			$mtitle = __('Below Information are fill-up by user', 'allwebbox');
+
+			$emailOutput = '';
+			$userEmail = '';
+			if(isset($allinputs) && count($allinputs) > 0){
+				$emailOutput .= '<h2 style="font-size:20px;">'.$mtitle.': </h2>';
+				$emailOutput .= '<table style="width:100%; border:1px solid #ddd; border-collapse:collapse;"><tbody>';
+				foreach($allinputs as $k => $s_em){
+					switch($k){
+						case'dateofbirth':
+						$k = 'Date of Birth'; 
+						break;
+						case 'firstname':
+						$k = 'First Name';
+						break; 
+						case 'lastname':
+						$k = 'Last Name';
+						break;
+						case 'email':
+						$userEmail = $s_em;
+						break;
+						case 'brand':
+						$s_em = implode(', ', $s_em);
+						$k = ucfirst($k);
+						break;
+
+						default:
+						$k = ucfirst($k);
+					}
+
+				$emailOutput .=	'<tr>
+									<th style="text-align:left;border:1px solid #ddd; padding:5px 10px;">'.$k.'</th>
+									<td style="border:1px solid #ddd; padding:5px 10px;">'.$s_em.'</td>
+								</tr>';
+						
+				}
+				$emailOutput .='</tbody></table>';	
+
+
+				$headers = "From: $siteTitle <$adminEm>" . "\r\n";	
+				//$headers[] = 'Content-Type: text/html; charset=UTF-8' . "\r\n";
+				$adminSub = __('Nuevo registro de cliente web', 'allwebbox');
+
+				add_filter( 'wp_mail_content_type', 'wpdocs_set_html_mail_content_type' );
+				$adminE = wp_mail( $adminEm, $adminSub, $emailOutput, $headers);
+				remove_filter( 'wp_mail_content_type', 'wpdocs_set_html_mail_content_type' );
+
+				if($adminE){
+					add_filter( 'wp_mail_content_type', 'wpdocs_set_html_mail_content_type' );
+					wp_mail( $userEmail, $adminSub, $emailOutput, $headers);
+					remove_filter( 'wp_mail_content_type', 'wpdocs_set_html_mail_content_type' );
+				}
+
+			} // End if(isset($allinputs) && count($allinputs) > 0)
+
+			/*
+			* End mail Sent to Admin & user
+			*/
+
 			
 		} //End if($insert)
 		elseif(!isset($_POST['edit_entry']))
@@ -396,7 +466,7 @@ function view_area($form_id) {
 			foreach($custom_ques as $bk => $bcs):
 				$selectType = $wpdb->get_row("SELECT `row_id`, `answer_type`, `required` FROM $q_question WHERE `questions`= '$bcs'", OBJECT);
 
-				$val = (isset($emsg) && isset($_POST['others']))?$_POST['others'][$bcs]:'';
+				$val = (isset($emsg) && isset($_POST['others']))?@$_POST['others'][$bcs]:'';
 
 				//$thisN = str_replace(' ', '', strtolower($bcs));
 				if($editByUsr){
